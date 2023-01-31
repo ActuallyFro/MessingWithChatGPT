@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <title>Random Number Generator</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Random Number Generator</h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Number 1</th>
+            <th>Number 2</th>
+            <th>Number 3</th>
+          </tr>
+        </thead>
+        <tbody id="number-table">
+          <!-- Numbers will be added here -->
+        </tbody>
+      </table>
+      <button class="btn btn-primary" id="generate-button">Generate Numbers</button>
+    </div>
+    <script>
+      const generateButton = document.getElementById("generate-button");
+      const numberTable = document.getElementById("number-table");
+
+      generateButton.addEventListener("click", () => {
+        const number1 = Math.floor(Math.random() * 100);
+        const number2 = Math.floor(Math.random() * 100);
+        const number3 = Math.floor(Math.random() * 100);
+
+        const row = `
+          <tr>
+            <td>${number1}</td>
+            <td>${number2}</td>
+            <td>${number3}</td>
+          </tr>
+        `;
+
+        numberTable.innerHTML = row;
+      });
+    </script>
+  </body>
+</html>

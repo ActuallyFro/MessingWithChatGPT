@@ -1,0 +1,18 @@
+[package]
+name = "network_ping_pong"
+version = "0.1.0"
+authors = ["Your Name <your.email@example.com>"]
+
+[dependencies]
+
+[lib]
+name = "pingpong"
+path = "server.rs"
+
+[[bin]]
+name = "pingpong_server"
+path = "server.rs"
+
+[[bin]]
+name = "pingpong_client"
+path = "client.rs"
