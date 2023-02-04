@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $("#addNew").click(function(){
+        var newOption = $("#newOption").val();
+        $("#options").append("<option value='" + newOption + "'>" + newOption + "</option>");
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="container">
+  <h2>Dropdown with Saved Options</h2>
+  <p>Click the "Add New" button to add a new option to the dropdown:</p>
+  <form>
+    <div class="form-group">
+      <label for="options">Options:</label>
+      <select class="form-control" id="options">
+        <option value="Option 1">Option 1</option>
+        <option value="Option 2">Option 2</option>
+        <option value="Option 3">Option 3</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="newOption">Add New:</label>
+      <input type="text" class="form-control" id="newOption">
+    </div>
+    <button type="button" class="btn btn-primary" id="addNew">Add New</button>
+  </form>
+</div>
+
+</body>
+</html>
