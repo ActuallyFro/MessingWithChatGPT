@@ -3,7 +3,7 @@
 :source-highlighter: rouge
 
 .Use Case Diagram
-image::images/plantuml.png[align=center]Test Words
+image::images/plantuml.png[align=center]
 
 [source,java]
 ----
