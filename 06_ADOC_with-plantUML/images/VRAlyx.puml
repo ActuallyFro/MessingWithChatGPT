@@ -1,17 +1,31 @@
 @startuml
 title Use Case Diagram for VR Gaming
 
-"Half-Life Alyx" as HLA
-"VR Headset" as VRH
-"Gaming PC" as GPC
 
-User -> VRH : Uses
-User -> GPC : Uses
-User -> Steam : Launches
-Steam -> HLA : Starts
+:GAm3r:
+("Meta Quest 2 - VR Headset") as VRH
 
-(VRH) <.. (GPC)
-(GPC) <.. (Steam)
-(Steam) <.. (HLA)
+
+rectangle "Gaming PC" as PC {
+  rectangle "Half-Life Alyx" as HLA
+  (Steam)
+  ("Occulus Rift App") as ORA
+
+  (Steam) -> HLA : Starts
+  (Steam) -> ORA : Starts
+}
+
+rectangle "Wi-Fi Router" as WR {
+  (LAN)
+}
+
+GAm3r -> VRH : Uses
+GAm3r -down-> PC : Boots
+GAm3r -> Steam : Launches
+
+VRH .. PC : "Optionally: Wired"
+ORA <.. HLA : "Leverages Streaming API"
+ORA -> WR : "Streams"
+WR -> VRH : "Streams"
 
 @enduml
