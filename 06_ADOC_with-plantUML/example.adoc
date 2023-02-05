@@ -1,0 +1,21 @@
+= Example Document
+
+This document will demonstrate how to include a PlantUML use case diagram in an AsciiDoc document.
+
+[plantuml, usecase, caption="Example Use Case Diagram"]
+----
+@startuml
+
+title Example Use Case Diagram
+
+Actor User
+
+User -> (Login)
+User -> (View Products)
+User -> (Add to Cart)
+User -> (Checkout)
+
+@enduml
+----
+
+This diagram shows the basic steps involved in a typical online shopping process. The user starts by logging in, then views the products, adds them to their cart, and finally checks out.

@@ -1,0 +1,17 @@
+@startuml
+title Use Case Diagram for VR Gaming
+
+"Half-Life Alyx" as HLA
+"VR Headset" as VRH
+"Gaming PC" as GPC
+
+User -> VRH : Uses
+User -> GPC : Uses
+User -> Steam : Launches
+Steam -> HLA : Starts
+
+(VRH) <.. (GPC)
+(GPC) <.. (Steam)
+(Steam) <.. (HLA)
+
+@enduml
