@@ -1,0 +1,32 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+}
+
+.digital-clock {
+  font-size: 3em;
+  margin-top: 50px;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+
+button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #666;
+}
