@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Asciidoctor PDF Example</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.5.1/css/foundation.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+  <div class="row">
+    <div class="medium-12 columns">
+      <h1>Asciidoctor PDF Example</h1>
+      <form id="input-form">
+        <label for="input">Input File:</label>
+        <input type="file" id="input" name="input">
+        <button type="submit">Convert to PDF</button>
+      </form>
+      <div id="output-container"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/asciidoctor.js/2.2.0/asciidoctor.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/asciidoctor-pdf.js/1.5.0/asciidoctor-pdf.min.js"></script>
+  <script>
+    const inputForm = document.querySelector('#input-form');
+    const outputContainer = document.querySelector('#output-container');
+
+    inputForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const inputFile = event.target.elements.input.files[0];
+      if (!inputFile) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const inputContent = reader.result;
+
+        const asciidoctor = Asciidoctor();
+        const options = {
+          attributes: {
+            'source-highlighter': 'highlight.js',
+            'imagesdir': 'images',
+            'icons': 'font',
+            'pdf-stylesdir': 'https://cdnjs.cloudflare.com/ajax/libs/asciidoctor-pdf.js/1.5.0/styles',
+            'pdf-style': 'asciidoctor',
+          },
+          sourcemap: true,
+          to_file: false,
+        };
+
+        const pdfContent = Asciidoctor.convert(inputContent, {
+          backend: 'pdf',
+          attributes: options.attributes,
+        });
+        outputContainer.innerHTML = `<embed src="${pdfContent}" type="application/pdf" width="100%" height="800px" />`;
+      };
+      reader.readAsText(inputFile);
+    });
+  </script>
+</body>
+</html>
