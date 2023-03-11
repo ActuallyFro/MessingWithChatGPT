@@ -1,4 +1,6 @@
 02_Rust_UDP_Ping-Pong/target
+02_Rust_UDP_Ping-Pong/Cargo.lock
+
 
 06_ADOC_with-plantUML/*.png
 06_ADOC_with-plantUML/*.pdf
@@ -6,3 +8,7 @@
 07_ADOC_Second-example/*.png
 
 11_RCV/target
+11_RCV/Cargo.lock
+13_RCV-vote-generator-script/target
+13_RCV-vote-generator-script/Cargo.lock
+
