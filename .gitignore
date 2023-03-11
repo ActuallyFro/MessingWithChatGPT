@@ -1,2 +1,8 @@
 02_Rust_UDP_Ping-Pong/target
+
+06_ADOC_with-plantUML/*.png
+06_ADOC_with-plantUML/*.pdf
+07_ADOC_Second-example/*.pdf
+07_ADOC_Second-example/*.png
+
 11_RCV/target
