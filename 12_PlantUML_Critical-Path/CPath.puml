@@ -1,0 +1,50 @@
+@startgantt
+title ANE: GL/GTE Part 2 [Project 2202]
+'saturday are closed
+'sunday are closed
+printscale weekly
+
+
+Project starts the 2022/10/20
+[Kick Off] as [Task 1] lasts 10 days
+[SYSTASKORD Completed] as [D1] happens at [Task 1]'s end
+[Project Site Creation] as [D2] happens at [Task 1]'s end
+
+
+-- Test Planning --
+
+
+[Requirements Analysis] as [Task 2] starts at [Task 1]'s end and lasts 60 days
+
+
+[Preliminary Design Review] as [Task 3] starts at [Task 2]'s end and lasts 45 days
+[PDR Slides and Initial Design] as [MS1.5] happens at [Task 2]'s end
+[CDR Slides and Final Design] as [MS2] happens at [Task 3]'s end
+
+
+[Critical Design Review] as [Task 4] starts at [Task 3]'s end and lasts 60 days
+-- Live Test --
+[Test at Thule] as [Task 5] starts at [Task 4]'s end and lasts 30 days
+
+
+-- Test Reporting --
+[Final Report Generation/Analysis] as [Task 6] starts at [Task 5]'s end and lasts 25 days
+
+
+[Task 1] is colored in #FF8888/Black
+[Task 2] is colored in #Orange/Black
+[MS1.5] is colored in #FFFFFF/Black
+[Task 3] is colored in #88FF88/Black
+[Task 4] is colored in #8888FF/Black
+[Task 5] is colored in #FF88FF/Black
+[MS3] happens at [Task 5]'s end
+
+
+[Task 1] is 100% completed
+[Task 2] is 100% completed
+[Task 3] is 50% completed
+[Task 4] is 7% completed
+[Task 5] is 7% completed
+
+
+@endgantt
