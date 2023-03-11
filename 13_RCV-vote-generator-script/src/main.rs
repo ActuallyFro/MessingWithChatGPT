@@ -1,5 +1,5 @@
 use rand::seq::SliceRandom;
-use rand::{thread_rng, Rng};
+use rand::{thread_rng};
 use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;

@@ -5,4 +5,4 @@ edition = "2018"
 
 [dependencies]
 rand = "0.8.4"
-uuid = "0.8.2"
+uuid = { version = "0.8.2", features = ["v4"] }
