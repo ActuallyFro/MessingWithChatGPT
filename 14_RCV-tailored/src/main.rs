@@ -10,8 +10,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut choices = Vec::new();
     for line in reader.lines() {
         let ballot = line?;
-        let mut votes = ballot.split(',').skip(1).map(|s| s.trim().to_string());
-        let uuid = votes.next().ok_or("Ballot has no UUID")?;
+        let votes = ballot.split(',').skip(1).map(|s| s.trim().to_string());
+        //Not used:  let uuid = votes.next().ok_or("Ballot has no UUID")?;
         let ballot_choices = votes.collect::<Vec<String>>();
         choices.push(ballot_choices);
     }
@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut winners = vec![String::new(); choices[0].len()];
     let mut losers = HashSet::new();
-    let num_ballots = choices.len();
+    //Not used: let num_ballots = choices.len();
 
     loop {
         let max_votes = vote_counts.values().max().ok_or("No max vote count found")?;
