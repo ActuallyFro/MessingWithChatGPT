@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Ranked Choice Voting Example</title>
+  </head>
+  <body>
+    <h1>Ranked Choice Voting Example</h1>
+    
+    <h2>Candidates</h2>
+    <ul id="candidates">
+    </ul>
+
+    <h2>Vote</h2>
+    <form id="vote-form">
+      <label for="rank1">Rank 1:</label>
+      <select id="rank1" name="rank1">
+      </select><br>
+
+      <label for="rank2">Rank 2:</label>
+      <select id="rank2" name="rank2">
+      </select><br>
+
+      <label for="rank3">Rank 3:</label>
+      <select id="rank3" name="rank3">
+      </select><br>
+
+      <input type="submit" value="Submit">
+    </form>
+
+    <h2>Results</h2>
+    <ul id="results">
+    </ul>
+
+    <script>
+      // Define candidates and their order
+      const candidates = [
+        { name: "Candidate A", votes: 0 },
+        { name: "Candidate B", votes: 0 },
+        { name: "Candidate C", votes: 0 }
+      ];
+
+      // Add candidates to the list
+      const candidateList = document.getElementById("candidates");
+      for (let i = 0; i < candidates.length; i++) {
+        const candidate = candidates[i];
+        const listItem = document.createElement("li");
+        listItem.innerText = candidate.name;
+        candidateList.appendChild(listItem);
+
+        // Add candidates to the dropdowns
+        const rank1Dropdown = document.getElementById("rank1");
+        const rank2Dropdown = document.getElementById("rank2");
+        const rank3Dropdown = document.getElementById("rank3");
+
+        const option = document.createElement("option");
+        option.text = candidate.name;
+        option.value = i;
+        rank1Dropdown.appendChild(option);
+
+        const option2 = document.createElement("option");
+        option2.text = candidate.name;
+        option2.value = i;
+        rank2Dropdown.appendChild(option2);
+
+        const option3 = document.createElement("option");
+        option3.text = candidate.name;
+        option3.value = i;
+        rank3Dropdown.appendChild(option3);
+      }
+
+      // Handle vote submission
+      const voteForm = document.getElementById("vote-form");
+      voteForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // Get vote rankings from form
+        const rank1 = parseInt(document.getElementById("rank1").value);
+        const rank2 = parseInt(document.getElementById("rank2").value);
+        const rank3 = parseInt(document.getElementById("rank3").value);
+
+        // Increment first choice vote
+        candidates[rank1].votes++;
+
+        // Check for majority win
+        const totalVotes = candidates.reduce((total, candidate) => total + candidate.votes, 0);
+        const majorityThreshold = Math.floor(totalVotes / 2) + 1;
+
+        let winner = null;
+        for (let i = 0; i < candidates.length; i++) {
+          if (candidates[i].votes >= majorityThreshold) {
+            winner = candidates[i];
+            break;
+          }
+        }
+
+        if (winner !== null) {
+          displayResults(`The winner is ${winner.name} with ${winner.votes} votes!`);
+        } else {
+
+// Eliminate last place candidate
+          let minVotes = Infinity;
+          let minIndex = null;
+          for (let i = 0; i < candidates.length; i++) {
+            if (candidates[i].votes < minVotes) {
+              minVotes = candidates[i].votes;
+              minIndex = i;
+            }
+          }
+          candidates[minIndex].eliminated = true;
+
+          // Redistribute votes from eliminated candidate
+          for (let i = 0; i < candidates.length; i++) {
+            if (!candidates[i].eliminated) {
+              const rank1 = parseInt(document.getElementById("rank1").value);
+              const rank2 = parseInt(document.getElementById("rank2").value);
+              const rank3 = parseInt(document.getElementById("rank3").value);
+
+              if (rank1 === minIndex) {
+                candidates[i].votes++;
+              } else if (rank2 === minIndex) {
+                candidates[i].secondChoiceVotes++;
+              } else if (rank3 === minIndex) {
+                candidates[i].thirdChoiceVotes++;
+              }
+            }
+          }
+
+          // Check for next round of voting
+          let eliminatedCandidates = candidates.filter(candidate => candidate.eliminated);
+          if (eliminatedCandidates.length === candidates.length - 1) {
+            // One candidate remaining, they win
+            winner = candidates.find(candidate => !candidate.eliminated);
+            displayResults(`The winner is ${winner.name} with ${winner.votes} votes!`);
+          } else {
+            // Display new ballot with eliminated candidate removed
+            const newCandidates = candidates.filter(candidate => !candidate.eliminated);
+            const newCandidateNames = newCandidates.map(candidate => candidate.name);
+
+            // Clear form
+            voteForm.reset();
+
+            // Clear old dropdown options
+            rank1Dropdown.innerHTML = "";
+            rank2Dropdown.innerHTML = "";
+            rank3Dropdown.innerHTML = "";
+
+            // Add new candidates to dropdown options
+            for (let i = 0; i < newCandidates.length; i++) {
+              const candidate = newCandidates[i];
+
+              const option = document.createElement("option");
+              option.text = candidate.name;
+              option.value = i;
+              rank1Dropdown.appendChild(option);
+
+              const option2 = document.createElement("option");
+              option2.text = candidate.name;
+              option2.value = i;
+              rank2Dropdown.appendChild(option2);
+
+              const option3 = document.createElement("option");
+              option3.text = candidate.name;
+              option3.value = i;
+              rank3Dropdown.appendChild(option3);
+            }
+
+            displayResults(`Eliminated ${eliminatedCandidates.map(candidate => candidate.name).join(", ")}.`);
+          }
+        }
+      });
+
+      // Display results
+      function displayResults(resultString) {
+        const resultsList = document.getElementById("results");
+        const listItem = document.createElement("li");
+        listItem.innerText = resultString;
+        resultsList.appendChild(listItem);
+      }
+    </script>
+  </body>
+</html>

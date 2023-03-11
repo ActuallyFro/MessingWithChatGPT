@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>isomorphic-git Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/isomorphic-git"></script>
+</head>
+<body>
+  <h1>isomorphic-git Example</h1>
+  <p>Open the console to see the output.</p>
+  <button onclick="init()">Initialize Repository</button>
+  <button onclick="addFiles()">Add Files</button>
+  <button onclick="commit()">Commit</button>
+  <script>
+    async function init() {
+      const dir = 'my-repo';
+      console.log(`Initializing repository in ${dir}...`);
+      await git.init({ dir });
+      console.log('Done!');
+    }
+
+    async function addFiles() {
+      const dir = 'my-repo';
+      const files = [
+        { path: 'file1.txt', content: 'Hello, world!' },
+        { path: 'file2.txt', content: 'Goodbye, world!' },
+      ];
+      console.log(`Adding files to repository in ${dir}...`);
+      await Promise.all(files.map(async (file) => {
+        await git.writeBlob({ dir, content: file.content });
+        await git.add({ dir, filepath: file.path });
+      }));
+      console.log('Done!');
+    }
+
+    async function commit() {
+      const dir = 'my-repo';
+      console.log(`Committing changes in repository in ${dir}...`);
+      const sha = await git.commit({
+        dir,
+        author: {
+          name: 'John Doe',
+          email: 'johndoe@example.com',
+        },
+        message: 'Initial commit',
+      });
+      console.log(`Committed with commit ${sha}`);
+    }
+  </script>
+</body>
+</html>

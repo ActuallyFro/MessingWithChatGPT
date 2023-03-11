@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>isomorphic-git and LightningFS Example</title>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/isomorphic-git"></script> -->
+  <!-- <script src="https://unpkg.com/isomorphic-git@beta/http/web/index.js"></script>
+  <script src="https://unpkg.com/@isomorphic-git/lightning-fs@2.0.0-rc2/umd/index.min.js"></script> -->
+
+  
+</head>
+<body>
+
+  <script src="https://unpkg.com/@isomorphic-git/lightning-fs"></script>
+  <script src="https://unpkg.com/isomorphic-git"></script>
+  <script type="module">
+    // import http from 'https://unpkg.com/isomorphic-git@beta/http/web/index.js'
+    import git from 'isomorphic-git'
+    // import {plugins, clone, commit, push} from 'isomorphic-git'
+    const fs = new LightningFS('fs');
+    const dir = '/my-repo';
+
+    async function init() {
+      console.log(`Initializing repository in ${dir}...`);
+      await fs.promises.mkdir(dir);
+      const repo = { fs, dir };
+      await git.init({ ...repo, dir: '.' }).then(() => console.log('Done!'));
+    }
+
+    async function addFiles() {
+      const files = [
+        { path: 'file1.txt', content: 'Hello, world!' },
+        { path: 'file2.txt', content: 'Goodbye, world!' },
+      ];
+      console.log(`Adding files to repository in ${dir}...`);
+      const repo = { fs, dir };
+      await Promise.all(files.map(async (file) => {
+        const content = file.content;
+        const path = file.path;
+        await fs.promises.writeFile(dir + '/' + path, content);
+        await git.add({ ...repo, filepath: path });
+      })).then(() => console.log('Done!'));
+    }
+
+    async function commit() {
+      console.log(`Committing changes in repository in ${dir}...`);
+      const repo = { fs, dir };
+      const sha = await git.commit({
+        ...repo,
+        author: {
+          name: 'John Doe',
+          email: 'johndoe@example.com',
+        },
+        message: 'Initial commit',
+      });
+      console.log(`Committed with commit ${sha}`);
+    }
+  </script>
+
+  <h1>isomorphic-git and LightningFS Example</h1>
+
+  <p>Open the console to see the output.</p>
+    <button onclick="init()">Initialize Repository</button>
+    <button onclick="addFiles()">Add Files</button>
+    <button onclick="commit()">Commit</button>
+
+Look at: https://github.com/isomorphic-git/isomorphic-git (also attempted this with VS Code in the past)
+
+
+</body>
+</html>
