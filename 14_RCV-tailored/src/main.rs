@@ -33,6 +33,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if args.help {
         CLIArguments::clap().print_help()?;
+        println!();
         return Ok(());
     }
 
