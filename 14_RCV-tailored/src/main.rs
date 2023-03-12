@@ -22,7 +22,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut ballots = Vec::new();
     let mut discovered_choices = Vec::new();
 
-    let TopToBottomListLimit = 3; //Top 3
+    let _top_to_bottom_list_limit = 3; //Top 3
 
     for line in reader.lines() {
         //IF DESIRED to all labels:
@@ -85,21 +85,19 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("[CRAB] Total Choices: {}", discovered_choices.len());
     println!("[CRAB] Discovered Choices: {:?}", discovered_choices);
 
-    let debug_breakout = false;
     let mut ballots_rcv_analysis = ballots.clone();
 
-    let mut TopToBottomList = Vec::new();
-let mut TopToBottomListCounter=0;
-// Start TopToBottomList LIMITED loop
+    let mut top_to_bottom_list = Vec::new();
+    let mut top_to_bottom_list_counter=0;
+
+// Start top_to_bottom_list LIMITED loop
 //loop {
 
-    let mut RCV_Downselect_Loop_Counter = 0;
+    let mut rcv_downselect_loop_counter = 0;
     loop {
-        println!("[CRAB] [VERBOSE] RCV Loop Iteration: {}", RCV_Downselect_Loop_Counter);
+        println!("[CRAB] [VERBOSE] RCV Loop Iteration: {}", rcv_downselect_loop_counter);
 
-        // // Count the first choice votes
-        let mut counter = 0;
-
+        // let mut counter = 0;
         let mut vote_counts = HashMap::new();
         for ballot in &ballots_rcv_analysis {
             // println!("[CRAB] [VERBOSE] Ballot #{}", counter);
@@ -109,7 +107,7 @@ let mut TopToBottomListCounter=0;
             let count = vote_counts.entry(ballot.choices[0].clone()).or_insert(0);
             *count += 1;
 
-            counter += 1;
+            // counter += 1;
             // println!("");
         }
 
@@ -135,10 +133,10 @@ let mut TopToBottomListCounter=0;
         
         // evlauate if largest_ballot_sum > 50% of total_ballot_votes
         if largest_ballot_sum > total_ballot_votes / 2 {
-            println!("[CRAB] Winner ({}): {}", TopToBottomListCounter+1, largest_ballot_choice);
+            println!("[CRAB] Winner ({}): {}", top_to_bottom_list_counter+1, largest_ballot_choice);
             println!("[CRAB] % of vote: {}", largest_ballot_sum as f32 / total_ballot_votes as f32 * 100.0);
-            //push the winner onto the TopToBottomList
-            TopToBottomList.push(largest_ballot_choice.clone());
+            //push the winner onto the top_to_bottom_list
+            top_to_bottom_list.push(largest_ballot_choice.clone());
             break;
 
         } else {
@@ -173,15 +171,16 @@ let mut TopToBottomListCounter=0;
             }
         } 
 
-        RCV_Downselect_Loop_Counter += 1;
+        rcv_downselect_loop_counter += 1;
         println!("[CRAB] [VERBOSE] ");
 
     }
 
+    top_to_bottom_list_counter += 1;
 //}
-//END TopToBottomList LIMITED loop
+//END top_to_bottom_list LIMITED loop
 
-    println!("[CRAB] TopToBottomList: {:?}", TopToBottomList);
+    println!("[CRAB] top_to_bottom_list: {:?}", top_to_bottom_list);
 
 
 
