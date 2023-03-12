@@ -85,7 +85,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     loop {
         let mut rcv_downselect_loop_counter = 0;
-        loop {
+        // loop {
             if is_verbose {
                 println!("[CRAB] [VERBOSE] [{}] RCV Loop Iteration: {}", top_to_bottom_list_counter, rcv_downselect_loop_counter);
             }
@@ -171,28 +171,48 @@ fn main() -> Result<(), Box<dyn Error>> {
                 println!("[CRAB] [VERBOSE] [{}] ",top_to_bottom_list_counter);
             }
 
-        }
+        // }
+        //latest winner pushed to top_to_bottom_list; current ballots in ballots_rcv_analysis 
 
         top_to_bottom_list_counter += 1;
         if top_to_bottom_list_counter >= top_to_bottom_list_limit && top_to_bottom_list_limit != 0{
             break;
         }
 
+        println!("[CRAB] [DEBUG] top_to_bottom_list_counter {} vs. discovered_choices.len() {}", top_to_bottom_list_counter, discovered_choices.len());
         if top_to_bottom_list_counter >= discovered_choices.len()+1 {
             break;
         }
 
         println!("[CRAB] [DEBUG] BREAK HERE? Check...");
 
-        //Setup new Ballots w/o the discovered 'winners'
-        ballots_rcv_analysis = ballots.clone();
-        for winner in &top_to_bottom_list {
-            for ballot in &mut ballots_rcv_analysis {
-                if ballot.choices[0] == *winner {
-                    ballot.choices.remove(0);
-                }
+        //Goal rebuild ballots_rcv_analysis -- having removed the latest winner
+
+        //create temp_ballots_rcv_analysis
+        let mut temp_ballots_rcv_analysis = Vec::new();
+        let latest_winner = top_to_bottom_list[top_to_bottom_list.len()-1].clone();
+        //loop over ballots_rcv_analysis
+        for ballot in &ballots_rcv_analysis {
+            let mut temp_ballot = ballot.clone();
+            temp_ballot.choices.clear();
+
+            if ballot.choices.is_empty() {
+                continue;
             }
+
+            for choice in &ballot.choices {
+                //if choice == latest_winner, skip
+                if choice == &latest_winner {
+                    continue;
+                }
+                //else, add to temp_ballot
+                temp_ballot.choices.push(choice.clone());
+            }
+            //add temp_ballot to temp_ballots_rcv_analysis
+            temp_ballots_rcv_analysis.push(temp_ballot);
         }
+
+        ballots_rcv_analysis = temp_ballots_rcv_analysis.clone();
 
     }
     //END top_to_bottom_list LIMITED loop
