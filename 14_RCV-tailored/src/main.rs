@@ -12,10 +12,8 @@ struct Ballot {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // print CRAB header
     println!("CSV-powered Rustlang Analyzer for Ballots (CRAB)");
     println!("================================================");
-    //IF DESIRED to all labels: let mut skip_first_line = true;
     let filename = "votes.csv";
     let file = File::open(filename)?;
     let reader = BufReader::new(file);
@@ -26,12 +24,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let is_verbose = true;
 
     for line in reader.lines() {
-        //IF DESIRED to all labels:
-        //if skip_first_line {
-        //    skip_first_line = false;
-        //    continue;
-        //}
-
         let line = line?;
         let mut read_in_ballot = Ballot {
             uuid: String::new(),
@@ -91,8 +83,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut top_to_bottom_list = Vec::new();
     let mut top_to_bottom_list_counter=0;
 
-
-    // Start top_to_bottom_list LIMITED loop
     loop {
         let mut rcv_downselect_loop_counter = 0;
         loop {
@@ -103,26 +93,24 @@ fn main() -> Result<(), Box<dyn Error>> {
             // let mut counter = 0;
             let mut vote_counts = HashMap::new();
             for ballot in &ballots_rcv_analysis {
+                //check if ballot.choices[0] is empty, if so, skip
+                if ballot.choices.is_empty() {
+                    continue;
+                }
+
                 // println!("[CRAB] [VERBOSE] [{}] Ballot #{}", top_to_bottom_list_counter, counter);
                 // println!("[CRAB] [VERBOSE] [{}] UUID: {}", top_to_bottom_list_counter, ballot.uuid);
                 // println!("[CRAB] [VERBOSE] [{}] Choice: {}", top_to_bottom_list_counter, ballot.choices[0]);
 
                 let count = vote_counts.entry(ballot.choices[0].clone()).or_insert(0);
                 *count += 1;
-
-                // counter += 1;
-                // println!("");
             }
 
             if is_verbose {
                 println!("[CRAB] [VERBOSE] [{}] Vote Counts: {:?}", top_to_bottom_list_counter, vote_counts);
             }
-            // print the total number of ballots in vote_counts
 
             let total_ballot_votes = vote_counts.values().sum::<i32>();
-            // println!("[CRAB] [VERBOSE] [{}] Total Ballots: {}", top_to_bottom_list_counter, total_ballot_votes);
-
-            //Calculate the highest vote count in vote_counts
             let mut largest_ballot_sum = 0;
             let mut largest_ballot_choice = String::new();
 
@@ -133,24 +121,18 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
             }
             let choice_percent = largest_ballot_sum as f32 / total_ballot_votes as f32 * 100.0;
-            //debug
+
             if is_verbose {
                 println!("[CRAB] [VERBOSE] [{}] Largest Choice: {} - @{} ({}%)", top_to_bottom_list_counter, largest_ballot_choice, largest_ballot_sum, choice_percent);
             }
 
-            // evlauate if largest_ballot_sum > 50% of total_ballot_votes
             if largest_ballot_sum > total_ballot_votes / 2 {
                 if is_verbose {
                     println!("[CRAB] Winner ({}): {}", top_to_bottom_list_counter+1, largest_ballot_choice);
                 }
-                //push the winner onto the top_to_bottom_list
                 top_to_bottom_list.push(largest_ballot_choice.clone());
                 break;
-
             }
-            // else {
-            //     println!("[CRAB] [VERBOSE] [{}] No winner yet",top_to_bottom_list_counter);
-            // }
 
             let mut smallest_ballot_sum = 0;
             let mut smallest_ballot_choice = String::new();
@@ -162,17 +144,21 @@ fn main() -> Result<(), Box<dyn Error>> {
                     smallest_ballot_choice = key.clone();
                 }
             }
-            //debug
+
             if is_verbose {
                 println!("[CRAB] [VERBOSE] [{}] Smallest Choice {} - @{}", top_to_bottom_list_counter, smallest_ballot_choice, smallest_ballot_sum);
             }
+
             // loop over vote_counts, if the value is equal to smallest_ballot_sum, remove ballot.choices[0]
             for (key, value) in &vote_counts {
                 let eval_choice = String::from(key);
                 if value == &smallest_ballot_sum {
                     for ballot in &mut ballots_rcv_analysis {
+                        //check if ballot.choices is empty
+                        if ballot.choices.is_empty() {
+                            continue;
+                        }
                         if ballot.choices[0] == eval_choice {
-                            // println!("[CRAB] [VERBOSE] [{}] Removing: {} from {}", top_to_bottom_list_counter, key, ballot.uuid);
                             ballot.choices.remove(0);
                         }
                     }
@@ -187,28 +173,22 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         }
 
-        // Remove 
-
         top_to_bottom_list_counter += 1;
         if top_to_bottom_list_counter >= top_to_bottom_list_limit && top_to_bottom_list_limit != 0{
             break;
         }
 
-        // break if out of bounds of loop vs. the choices
         if top_to_bottom_list_counter >= discovered_choices.len()+1 {
-            break; //top_to_bottom_list_limit
+            break;
         }
 
-        // re-clone ballots_rcv_analysis = ballots.clone();
+        println!("[CRAB] [DEBUG] BREAK HERE? Check...");
+
+        //Setup new Ballots w/o the discovered 'winners'
         ballots_rcv_analysis = ballots.clone();
-        //then loop over each of the winners in `top_to_bottom_list`
         for winner in &top_to_bottom_list {
-            // println!("[CRAB] [DEBUG] Removing {} from ballots_rcv_analysis", winner);
-            // loop over ballots_rcv_analysis
             for ballot in &mut ballots_rcv_analysis {
-                // if ballot.choices[0] == winner
                 if ballot.choices[0] == *winner {
-                    // remove ballot.choices[0]
                     ballot.choices.remove(0);
                 }
             }
