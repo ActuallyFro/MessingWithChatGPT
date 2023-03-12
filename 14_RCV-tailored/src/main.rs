@@ -3,7 +3,6 @@ use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-// Ballot Struct, which has a string for the UUID and a vector of strings for the choices
 struct Ballot {
     uuid: String,
     choices: Vec<String>,
@@ -18,6 +17,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     // let mut choices = Vec::new();
 
     let mut ballots = Vec::new();
+
+    //Discovered Choices
+    let mut discovered_choices = Vec::new();
+
+    println!("[DEBUG] Total Choices: {}", discovered_choices.len());
+    println!("[DEBUG] Discovered Choices: {:?}", discovered_choices);
 
     for line in reader.lines() {
         //IF DESIRED to all labels:
@@ -47,8 +52,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         for c in line.chars().skip(read_in_ballot.uuid.len() + 1) {
             //comma OR end of line
             if c == ',' {
-                read_in_ballot.choices.push(read_choice.clone());
+                if !read_choice.is_empty() {
+                    read_in_ballot.choices.push(read_choice.clone());
+
+                    if !discovered_choices.contains(&read_choice) {
+                        println!("[DEBUG] Found: {}", read_choice);
+                        discovered_choices.push(read_choice.clone());
+                    }
+                }
                 read_choice = String::new();
+
 
             } else {
                 read_choice.push(c);
@@ -57,6 +70,13 @@ fn main() -> Result<(), Box<dyn Error>> {
             //if last character AND read_choice is not empty, push the last choice into read_in_ballot.choices
             if c == line.chars().last().unwrap() && !read_choice.is_empty() {
                 read_in_ballot.choices.push(read_choice.clone());
+
+                // push into `discovered_choices` if NOT duplicate
+                if !discovered_choices.contains(&read_choice) {
+                    println!("[DEBUG] Found: {}", read_choice);
+                    discovered_choices.push(read_choice.clone());
+                }
+
             }
 
         }
@@ -69,7 +89,15 @@ fn main() -> Result<(), Box<dyn Error>> {
         //Push the ballot into the vector of ballots
         ballots.push(read_in_ballot);
     }
+
+    // Logical error excpetion handling: -- BUG!!!
+    discovered_choices.retain(|x| !x.is_empty());
+    // sort the discovered choices
+    discovered_choices.sort();
+
     println!("[DEBUG] Total Ballots: {}", ballots.len());
+    println!("[DEBUG] Total Choices: {}", discovered_choices.len());
+    println!("[DEBUG] Discovered Choices: {:?}", discovered_choices);
 
 
     // EXIT -- for debugging
