@@ -85,7 +85,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     loop {
         let mut rcv_downselect_loop_counter = 0;
-        // loop {
+        loop {
             if is_verbose {
                 println!("[CRAB] [VERBOSE] [{}] RCV Loop Iteration: {}", top_to_bottom_list_counter, rcv_downselect_loop_counter);
             }
@@ -171,7 +171,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 println!("[CRAB] [VERBOSE] [{}] ",top_to_bottom_list_counter);
             }
 
-        // }
+        }
         //latest winner pushed to top_to_bottom_list; current ballots in ballots_rcv_analysis 
 
         top_to_bottom_list_counter += 1;
@@ -186,33 +186,32 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         println!("[CRAB] [DEBUG] BREAK HERE? Check...");
 
-        //Goal rebuild ballots_rcv_analysis -- having removed the latest winner
+        let mut temp_ballots_rcv_analysis = ballots_rcv_analysis.clone();
+        // let mut temp_ballot = ballots_rcv_analysis[0].clone();
+        temp_ballots_rcv_analysis.clear();
+        ballots_rcv_analysis.clear();
 
-        //create temp_ballots_rcv_analysis
-        let mut temp_ballots_rcv_analysis = Vec::new();
-        let latest_winner = top_to_bottom_list[top_to_bottom_list.len()-1].clone();
-        //loop over ballots_rcv_analysis
-        for ballot in &ballots_rcv_analysis {
+        for ballot in &ballots {
             let mut temp_ballot = ballot.clone();
-            temp_ballot.choices.clear();
-
-            if ballot.choices.is_empty() {
-                continue;
-            }
-
-            for choice in &ballot.choices {
-                //if choice == latest_winner, skip
-                if choice == &latest_winner {
-                    continue;
+            
+            for winner in &top_to_bottom_list {
+                if temp_ballot.choices.contains(winner) {
+                    temp_ballot.choices.remove(temp_ballot.choices.iter().position(|x| x == winner).unwrap());
                 }
-                //else, add to temp_ballot
-                temp_ballot.choices.push(choice.clone());
             }
-            //add temp_ballot to temp_ballots_rcv_analysis
-            temp_ballots_rcv_analysis.push(temp_ballot);
+            //push into ballots_rcv_analysis
+            temp_ballots_rcv_analysis.push(temp_ballot.clone());
         }
 
-        ballots_rcv_analysis = temp_ballots_rcv_analysis.clone();
+        for temp_ballot in &temp_ballots_rcv_analysis {
+            if !temp_ballot.choices.is_empty() {
+                ballots_rcv_analysis.push(temp_ballot.clone());
+            }
+        }
+        // break if ballots_rcv_analysis is empty
+        if ballots_rcv_analysis.is_empty() {
+            break;
+        }
 
     }
     //END top_to_bottom_list LIMITED loop
