@@ -4,6 +4,7 @@ use std::collections::{HashMap};
 use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use structopt::StructOpt;
 
 #[derive(Clone)]
 struct Ballot {
@@ -11,17 +12,36 @@ struct Ballot {
     choices: Vec<String>,
 }
 
+#[derive(StructOpt)]
+#[structopt(about = "This app will dynamically load a CSV, compute Ranked Choice Voting, and provide simple stats.")]
+struct CLIArguments {
+    #[structopt(short = "f", long = "file", help = "The input file to read from")]
+    input_file: Option<String>,
+
+    #[structopt(short = "v", long = "verbose", help = "Print verbose output")]
+    verbose: bool,
+
+    #[structopt(long = "help", help = "Prints help information")]
+    help: bool,
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     println!("CSV-powered Rustlang Analyzer for Ballots (CRAB)");
     println!("================================================");
-    let filename = "votes.csv";
-    let file = File::open(filename)?;
+
+    let args = CLIArguments::from_args();
+
+    if args.help {
+        CLIArguments::clap().print_help()?;
+        return Ok(());
+    }
+
+    let file = File::open(args.input_file.unwrap_or_else(|| "votes.csv".to_string()))?;
     let reader = BufReader::new(file);
     let mut ballots = Vec::new();
     let mut discovered_choices = Vec::new();
 
     let top_to_bottom_list_limit = 0; //Top 20
-    let is_verbose = true;
 
     for line in reader.lines() {
         let line = line?;
@@ -86,7 +106,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     loop {
         let mut rcv_downselect_loop_counter = 0;
         loop {
-            if is_verbose {
+            if args.verbose {
                 println!("[CRAB] [VERBOSE] [{}] RCV Loop Iteration: {}", top_to_bottom_list_counter, rcv_downselect_loop_counter);
             }
 
@@ -106,7 +126,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 *count += 1;
             }
 
-            if is_verbose {
+            if args.verbose {
                 println!("[CRAB] [VERBOSE] [{}] Vote Counts: {:?}", top_to_bottom_list_counter, vote_counts);
             }
 
@@ -122,12 +142,12 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
             let choice_percent = largest_ballot_sum as f32 / total_ballot_votes as f32 * 100.0;
 
-            if is_verbose {
+            if args.verbose {
                 println!("[CRAB] [VERBOSE] [{}] Largest Choice: {} - @{} ({}%)", top_to_bottom_list_counter, largest_ballot_choice, largest_ballot_sum, choice_percent);
             }
 
             if largest_ballot_sum > total_ballot_votes / 2 {
-                if is_verbose {
+                if args.verbose {
                     println!("[CRAB] Winner ({}): {}", top_to_bottom_list_counter+1, largest_ballot_choice);
                 }
                 top_to_bottom_list.push(largest_ballot_choice.clone());
@@ -145,7 +165,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
             }
 
-            if is_verbose {
+            if args.verbose {
                 println!("[CRAB] [VERBOSE] [{}] Smallest Choice {} - @{}", top_to_bottom_list_counter, smallest_ballot_choice, smallest_ballot_sum);
             }
 
@@ -167,7 +187,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             rcv_downselect_loop_counter += 1;
 
-            if is_verbose {
+            if args.verbose {
                 println!("[CRAB] [VERBOSE] [{}] ",top_to_bottom_list_counter);
             }
 
@@ -218,6 +238,17 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     println!("[CRAB] top_to_bottom_list: {:?}", top_to_bottom_list);
 
+
+    //Analysis of ballots -- for each choice, count the votes by ranking
+    let mut ballots_analysis = HashMap::new();
+    for ballot in &ballots {
+        for choice in &ballot.choices {
+            let count = ballots_analysis.entry(choice.clone()).or_insert(0);
+            *count += 1;
+        }
+    }
+    //print results
+    println!("[CRAB] [DEBUG] Ballots Analysis: {:?}", ballots_analysis);
 
 
 
