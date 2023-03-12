@@ -1,4 +1,5 @@
 // use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -21,8 +22,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     //Discovered Choices
     let mut discovered_choices = Vec::new();
 
-    println!("[DEBUG] Total Choices: {}", discovered_choices.len());
-    println!("[DEBUG] Discovered Choices: {:?}", discovered_choices);
+    // println!("[DEBUG] Total Choices: {}", discovered_choices.len());
+    // println!("[DEBUG] Discovered Choices: {:?}", discovered_choices);
 
     for line in reader.lines() {
         //IF DESIRED to all labels:
@@ -56,7 +57,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     read_in_ballot.choices.push(read_choice.clone());
 
                     if !discovered_choices.contains(&read_choice) {
-                        println!("[DEBUG] Found: {}", read_choice);
+                        // println!("[DEBUG] Found: {}", read_choice);
                         discovered_choices.push(read_choice.clone());
                     }
                 }
@@ -73,7 +74,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                 // push into `discovered_choices` if NOT duplicate
                 if !discovered_choices.contains(&read_choice) {
-                    println!("[DEBUG] Found: {}", read_choice);
+                    // println!("[DEBUG] Found: {}", read_choice);
                     discovered_choices.push(read_choice.clone());
                 }
 
@@ -81,30 +82,75 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         }
 
+        // println!("[DEBUG] UUID: {}", read_in_ballot.uuid);
+        // println!("[DEBUG] Choices: {:?} <total: {}>", read_in_ballot.choices, read_in_ballot.choices.len());
 
-        //Total Ballots:
-        println!("[DEBUG] UUID: {}", read_in_ballot.uuid);
-        println!("[DEBUG] Choices: {:?} <total: {}>", read_in_ballot.choices, read_in_ballot.choices.len());
-
-        //Push the ballot into the vector of ballots
         ballots.push(read_in_ballot);
     }
 
-    // Logical error excpetion handling: -- BUG!!!
     discovered_choices.retain(|x| !x.is_empty());
-    // sort the discovered choices
     discovered_choices.sort();
 
     println!("[DEBUG] Total Ballots: {}", ballots.len());
     println!("[DEBUG] Total Choices: {}", discovered_choices.len());
     println!("[DEBUG] Discovered Choices: {:?}", discovered_choices);
 
+    let debug_breakout = true;
+    loop {
 
-    // EXIT -- for debugging
-    std::process::exit(0);
+        // // Count the first choice votes
+        let mut counter = 0;
 
-    // // Count the first choice votes
-    // let mut vote_counts = HashMap::new();
+        let mut vote_counts = HashMap::new();
+        for ballot in &ballots {
+            println!("[DEBUG] Ballot #{}", counter);
+            println!("[DEBUG] UUID: {}", ballot.uuid);
+            println!("[DEBUG] Choice: {}", ballot.choices[0]);
+
+            let count = vote_counts.entry(ballot.choices[0].clone()).or_insert(0);
+            *count += 1;
+
+            counter += 1;
+            println!("");
+        }
+
+        println!("[DEBUG] Vote Counts: {:?}", vote_counts);
+        // print the total number of ballots in vote_counts
+
+        let total_ballot_votes = vote_counts.values().sum::<i32>();
+        println!("[DEBUG] Total Ballots: {}", total_ballot_votes);
+
+        //Calculate the highest vote count in vote_counts
+        let mut largest_ballot_sum = 0;
+        let mut largest_ballot_choice = String::new();
+        for (key, value) in &vote_counts {
+            if value > &largest_ballot_sum {
+                largest_ballot_sum = *value;
+                largest_ballot_choice = key.clone();
+            }
+        }
+        //debug
+        println!("[DEBUG] Largest Ballot Sum: {}", largest_ballot_sum);
+        println!("[DEBUG] Largest Ballot Choice: {}", largest_ballot_choice);
+        
+        // evlauate if largest_ballot_sum > 50% of total_ballot_votes
+        if largest_ballot_sum > total_ballot_votes / 2 {
+            println!("[DEBUG] Winner: {}", largest_ballot_choice);
+        } else {
+            println!("[DEBUG] No winner yet");
+            println!("[DEBUG] % of vote: {}", largest_ballot_sum as f32 / total_ballot_votes as f32 * 100.0);
+        }
+
+        // breakout for now...
+        if debug_breakout {
+            break;
+        }
+    }
+
+
+
+
+
     // for ballot in &choices {
     //     if let Some(choice) = ballot.first() {
     //         let count = vote_counts.entry(choice.clone()).or_insert(0);
@@ -163,5 +209,5 @@ fn main() -> Result<(), Box<dyn Error>> {
     //     println!("Rank {}: {}", rank + 1, winner);
     // }
 
-    // Ok(())
+    Ok(())
 }
