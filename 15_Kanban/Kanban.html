@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Simple Kanban Board</title>
+      <style>
+         body {
+            font-family: Arial, sans-serif;
+         }
+         .kanban-board {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+         }
+         .column {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            flex: 1;
+            margin-right: 20px;
+            padding: 10px;
+         }
+         .column-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+         }
+         .card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            cursor: grab;
+         }
+         .card:hover {
+            background-color: #f2f2f2;
+         }
+         .dragging {
+            opacity: 0.5;
+         }
+         .editable {
+            display: none;
+         }
+         .edit-input {
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            background-color: #f9f9f9;
+            padding: 5px;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="kanban-board">
+         <div class="column" id="column1" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="column-header" ondblclick="editElement(this)">To Do</div>
+            <div class="card" draggable="true" ondragstart="drag(event)" id="task1" ondblclick="editElement(this)">Task 1</div>
+            <div class="card" draggable="true" ondragstart="drag(event)" id="task2" ondblclick="editElement(this)">Task 2</div>
+            <div class="card" draggable="true" ondragstart="drag(event)" id="task3" ondblclick="editElement(this)">Task 3</div>
+         </div>
+         <div class="column" id="column2" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="column-header" ondblclick="editElement(this)">In Progress</div>
+            <div class="card" draggable="true" ondragstart="drag(event)" id="task4" ondblclick="editElement(this)">Task 4</div>
+            <div class="card" draggable="true" ondragstart="drag(event)" id="task5" ondblclick="editElement(this)">Task 5</div>
+         </div>
+         <div class="column" id="column3" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="column-header" ondblclick="editElement(this)">Done</div>
+            <div class="card" draggable="true" ondragstart="drag(event)" id="task6" ondblclick="editElement(this)">Task 6</div>
+          </div>
+        </div>
+      </body>
+  <script>
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+    function drag(event) {
+      event.dataTransfer.setData("text", event.target.id);
+      event.target.classList.add("dragging");
+    }
+    function drop(event) {
+      event.preventDefault();
+      var data = event.dataTransfer.getData("text");
+      event.target.appendChild(document.getElementById(data));
+      event.target.classList.remove("dragging");
+    }
+    function editElement(element) {
+      var text = element.innerHTML;
+      var input = document.createElement("input");
+      input.setAttribute("type", "text");
+      input.setAttribute("value", text);
+      input.classList.add("edit-input");
+      input.addEventListener("blur", function() {
+          element.innerHTML = this.value;
+          element.style.display = "block";
+      });
+      element.innerHTML = "";
+      element.appendChild(input);
+      input.focus();
+    }
+  </script>
+</html>
