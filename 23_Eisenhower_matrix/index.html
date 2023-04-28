@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eisenhower Matrix SPA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -130,7 +131,19 @@
             });
             card.appendChild(edit);
 
-            const cardBody = document.createElement("textarea");
+            const viewAsHtmlIcon = document.createElement("i");
+            viewAsHtmlIcon.className = "fas fa-eye view-as-html";
+            viewAsHtmlIcon.style.marginLeft = "0.5rem";
+            card.appendChild(viewAsHtmlIcon);
+
+            const editIcon = document.createElement("i");
+            editIcon.className = "fas fa-edit edit";
+            editIcon.style.display = "none";
+            editIcon.style.marginLeft = "0.5rem";
+            card.appendChild(editIcon);
+
+
+            let cardBody = document.createElement("textarea");
             cardBody.className = "card-body";
             cardBody.placeholder = "Enter description...";
             card.appendChild(cardBody);
@@ -138,6 +151,57 @@
             card.addEventListener("dragstart", (e) => {
                 e.dataTransfer.setData("text", e.target.id);
             });
+
+
+            viewAsHtmlIcon.addEventListener("click", () => {
+                if (cardBody.tagName === "TEXTAREA") {
+                    const sanitizedHtml = sanitizeHTML(cardBody.value);
+                    const renderedHtml = document.createElement("div");
+                    renderedHtml.className = "card-body";
+                    renderedHtml.innerHTML = sanitizedHtml;
+                    card.replaceChild(renderedHtml, cardBody);
+                    cardBody = renderedHtml;
+                    viewAsHtmlIcon.style.display = "none";
+                    editIcon.style.display = "inline";
+                } else {
+                    const textarea = document.createElement("textarea");
+                    textarea.className = "card-body";
+                    textarea.placeholder = "Enter description...";
+                    textarea.innerHTML = cardBody.innerHTML;
+                    card.replaceChild(textarea, cardBody);
+                    cardBody = textarea;
+                    viewAsHtmlIcon.style.display = "inline";
+                    editIcon.style.display = "none";
+                }
+            });
+
+
+            editIcon.addEventListener("click", () => {
+                if (cardBody.tagName === "DIV") {
+                    const textarea = document.createElement("textarea");
+                    textarea.className = "card-body";
+                    textarea.placeholder = "Enter description...";
+                    textarea.value = cardBody.innerText;
+                    card.replaceChild(textarea, cardBody);
+                    cardBody = textarea;
+                    viewAsHtmlIcon.style.display = "inline";
+                    editIcon.style.display = "none";
+                } else {
+                    const newCardBody = document.createElement("div");
+                    newCardBody.className = "card-body";
+                    newCardBody.innerHTML = cardBody.value;
+                    if (card.contains(cardBody)) {
+                    card.replaceChild(newCardBody, cardBody);
+                    } else {
+                    card.appendChild(newCardBody);
+                    }
+                    cardBody = newCardBody;
+                    viewAsHtmlIcon.style.display = "inline";
+                    editIcon.style.display = "none";
+                }
+            });
+
+
 
             return card;
         }
@@ -193,6 +257,7 @@
                 e.target.classList.remove("dragging");
             }
         });
+
     </script>
 </body>
 </html>
