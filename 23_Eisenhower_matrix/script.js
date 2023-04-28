@@ -83,7 +83,7 @@
                     const textarea = document.createElement("textarea");
                     textarea.className = "card-body";
                     textarea.placeholder = "Enter description...";
-                    textarea.value = cardBody.innerText;
+                    textarea.value = cardBody.innerHTML; // Change this line
                     card.replaceChild(textarea, cardBody);
                     cardBody = textarea;
                     viewAsHtmlIcon.style.display = "inline";
@@ -93,15 +93,16 @@
                     newCardBody.className = "card-body";
                     newCardBody.innerHTML = cardBody.value;
                     if (card.contains(cardBody)) {
-                    card.replaceChild(newCardBody, cardBody);
+                        card.replaceChild(newCardBody, cardBody);
                     } else {
-                    card.appendChild(newCardBody);
+                        card.appendChild(newCardBody);
                     }
                     cardBody = newCardBody;
                     viewAsHtmlIcon.style.display = "inline";
                     editIcon.style.display = "none";
                 }
             });
+            
 
 
 
