@@ -4,7 +4,7 @@ document.querySelectorAll(".plus").forEach(plus => {
         const container = quadrant.querySelector(".container");
         const card = createCard();
         container.appendChild(card);
-        updateCardCount(quadrant, 1); // Increase the card count by 1
+        updateCardCount(quadrant, 1);
     });
 });
 
@@ -22,10 +22,11 @@ function createCard() {
     minus.textContent = "-";
     minus.className = "minus";
     minus.addEventListener("click", () => {
-        const quadrant = card.parentElement;
+        const quadrant = card.parentElement.parentElement;
         card.remove();
-        updateCardCount(quadrant, -1); // Decrease the card count by 1
+        updateCardCount(quadrant, -1);
     });
+    
     
     card.appendChild(minus);
 
