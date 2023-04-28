@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Fantasy Name Generator</title>
+</head>
+<body>
+  <h1>Fantasy Name Generator</h1>
+  <button id="generate">Generate Name</button>
+  <table id="namesTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Background</th>
+        <th>Class</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <button id="export">Export to JSON</button>
+
+  <input type="file" id="import" accept=".json" style="display:none;">
+  <label for="import" class="button">Import JSON</label>
+
+  <script src="script.js"></script>
+</body>
+</html>
