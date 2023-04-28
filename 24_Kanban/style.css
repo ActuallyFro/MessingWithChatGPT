@@ -1,0 +1,100 @@
+/* Styling for the header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #222;
+  color: #fff;
+  padding: 0 10px;
+}
+
+/* Styling for the board title */
+#board-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Styling for the menu */
+#menu {
+  display: flex;
+  gap: 10px;
+}
+
+/* Styling for the create board button */
+#create-board-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Styling for the main section */
+main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px;
+  margin: 10px;
+  background-color: #eee;
+}
+
+/* Styling for the list container */
+#lists-container {
+  flex-basis: 100%;
+}
+
+/* Styling for the list */
+.list {
+  display: inline-block;
+  vertical-align: top;
+  min-width: 200px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Styling for the list header */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+/* Styling for the list title */
+.list-title {
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Styling for the list removal button */
+.list-remove-button {
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Styling for the list order icons */
+.list-order-icons {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Styling for the add list button */
+#add-list-button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 10px;
+}
