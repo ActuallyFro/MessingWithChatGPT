@@ -1,0 +1,142 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bootstrap Table demo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="container-fluid">
+    <h2>Table Example</h2>
+
+<table id="WIP_Tasks" class="table table-bordered table-striped table-hover table-sm style="width: 85%;">
+<!-- Bootstrap class change thead to blue -->
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Task</th>
+      <th>Source Email</th>
+      <th>Suspense Date</th>
+      <th>Suspense Time</th>
+      <th>Flagged Important</th>
+      <th>Tasked Date</th>
+      <th>Days Overdue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td contenteditable="true">1</td>
+      <td contenteditable="true">Respond to customer inquiries</td>
+      <td contenteditable="true">customer@example.com</td>
+      <td contenteditable="true">2023-03-14</td>
+      <td contenteditable="true">09:00 AM</td>
+      <td contenteditable="true">Yes</td>
+      <td contenteditable="true">2023-03-12</td>
+      <td contenteditable="true">2</td>
+    </tr>
+    <tr>
+      <td contenteditable="true">2</td>
+      <td contenteditable="true">Prepare presentation for meeting</td>
+      <td contenteditable="true">boss@example.com</td>
+      <td contenteditable="true">2023-03-16</td>
+      <td contenteditable="true">02:00 PM</td>
+      <td contenteditable="true">No</td>
+      <td contenteditable="true">2023-03-12</td>
+      <td contenteditable="true">2</td>
+    </tr>
+    <tr>
+      <td contenteditable="true">3</td>
+      <td contenteditable="true">Submit project proposal</td>
+      <td contenteditable="true">client@example.com</td>
+      <td contenteditable="true">2023-03-20</td>
+      <td contenteditable="true">11:00 AM</td>
+      <td contenteditable="true">Yes</td>
+      <td contenteditable="true">2023-03-10</td>
+      <td contenteditable="true">4</td>
+    </tr>
+    <tr>
+      <td contenteditable="true">4</td>
+      <td contenteditable="true">Review budget report</td>
+      <td contenteditable="true">finance@example.com</td>
+      <td contenteditable="true">2023-03-18</td>
+      <td contenteditable="true">10:00 AM</td>
+      <td contenteditable="true">No</td>
+      <td contenteditable="true">2023-03-13</td>
+      <td contenteditable="true">1</td>
+    </tr>
+    <tr>
+      <td contenteditable="true">5</td>
+      <td contenteditable="true">Schedule team meeting</td>
+      <td contenteditable="true">team@example.com</td>
+      <td contenteditable="true">2023-03-15</td>
+      <td contenteditable="true">03:00 PM</td>
+      <td contenteditable="true">Yes</td>
+      <td contenteditable="true">2023-03-11</td>
+      <td contenteditable="true">3</td>
+    </tr>
+  </tbody>
+</table>
+</div> 
+
+<hr>
+<div class="container my-5">
+  <h1>Task Form</h1>
+  <form action="#" method="post">
+    <div class="mb-3">
+      <label for="task-input" class="form-label">Task</label>
+      <input type="text" class="form-control" id="task-input" name="task" required>
+    </div>
+    <div class="mb-3">
+      <label for="email-input" class="form-label">Source Email</label>
+      <input type="text" class="form-control" id="email-input" name="email" required>
+      <!-- For a LITERAL Email
+        <label for="email-input" class="form-label">Source Email</label>
+        <input type="email" class="form-control" id="email-input" name="email" required>
+      -->
+    </div>
+    <div class="mb-3">
+      <label for="date-input" class="form-label">Suspense Date</label>
+      <input type="date" class="form-control" id="date-input" name="date" required>
+    </div>
+    <div class="mb-3">
+      <label for="time-input" class="form-label">Suspense Time</label>
+      <input type="time" class="form-control" id="time-input" name="time" required>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="important-input" name="important">
+      <label class="form-check-label" for="important-input">Flagged Important</label>
+    </div>
+    <div class="mb-3">
+      <label for="tasked-date-input" class="form-label">Tasked Date</label>
+      <input type="date" class="form-control" id="tasked-date-input" name="tasked_date" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<div class="container my-5">
+  <h2>Task Table</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Task</th>
+        <th>Source Email</th>
+        <th>Suspense Date</th>
+        <th>Suspense Time</th>
+        <th>Flagged Important</th>
+        <th>Tasked Date</th>
+        <th>Days Overdue</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Table rows will be dynamically generated here -->
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
