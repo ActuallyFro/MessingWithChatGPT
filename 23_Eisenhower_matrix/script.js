@@ -1,8 +1,9 @@
         document.querySelectorAll(".plus").forEach(plus => {
             plus.addEventListener("click", (e) => {
                 const quadrant = e.target.parentElement;
+                const container = quadrant.querySelector(".container");
                 const card = createCard();
-                quadrant.appendChild(card);
+                container.appendChild(card);
                 updateCardCount(quadrant, 1); // Increase the card count by 1
             });
         });
@@ -144,17 +145,18 @@
                 e.preventDefault();
                 const cardId = e.dataTransfer.getData("text");
                 const card = document.getElementById(cardId);
-                
+                const container = quadrant.querySelector(".container");
+                            
                 if (card) {
-                    const oldQuadrant = card.parentElement;
-                    quadrant.appendChild(card);
+                    const oldQuadrant = card.parentElement.parentElement;
+                    container.appendChild(card);
                     updateCardCount(oldQuadrant, -1); // Decrease the card count in the old quadrant by 1
                     updateCardCount(quadrant, 1); // Increase the card count in the new quadrant by 1
                 } else {
                     const draggedCard = document.querySelector('.dragging');
                     if (draggedCard) {
-                        const oldQuadrant = draggedCard.parentElement;
-                        quadrant.appendChild(draggedCard);
+                        const oldQuadrant = draggedCard.parentElement.parentElement;
+                        container.appendChild(draggedCard);
                         updateCardCount(oldQuadrant, -1); // Decrease the card count in the old quadrant by 1
                         updateCardCount(quadrant, 1); // Increase the card count in the new quadrant by 1
                     }

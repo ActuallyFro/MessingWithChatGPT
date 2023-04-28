@@ -36,8 +36,8 @@ body {
 .minus {
     position: absolute;
     top: 0;
-    right: 0;
-    font-size: 1.2rem;
+    right: 15px;
+    font-size: 1.4rem;
     cursor: pointer;
 }
 .card-body {
@@ -72,4 +72,9 @@ input[type="text"]:focus {
     font-size: 1rem;
     font-weight: normal;
     margin-left: 0.5rem;
+}
+
+.container {
+    max-height: calc(100% - 3rem);
+    overflow-y: auto;
 }
