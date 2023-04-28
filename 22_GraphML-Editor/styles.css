@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+button {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+#nodes-container,
+#edges-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.node,
+.edge {
+  margin-bottom: 10px;
+}

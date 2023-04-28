@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-wrap: wrap;
+    height: 100vh;
+    margin: 0;
+}
+.quadrant {
+    width: 50%;
+    height: 50%;
+    position: relative;
+    box-sizing: border-box;
+    padding: 1rem;
+    border: 1px solid #ccc;
+}
+.quadrant h2 {
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+}
+.plus {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.card {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f0f0f0;
+    margin-bottom: 0.5rem;
+    position: relative;
+    cursor: move;
+}
+.minus {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.card-body {
+    display: none;
+    margin-top: 0.5rem;
+    white-space: pre-wrap;
+}
+
+.card:hover .card-body {
+    display: block;
+}
+
+.card.disable-hover .card-body {
+    display: block;
+}
+
+input[type="text"] {
+    font-family: inherit;
+    font-size: inherit;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+input[type="text"]:focus {
+    outline: auto;
+}

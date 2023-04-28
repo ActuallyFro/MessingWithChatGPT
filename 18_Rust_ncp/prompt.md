@@ -1,0 +1,1 @@
+Provide Rust lang source code of: single app having two modes - client and server choice by CLI flag. The server mode hosts a CLI-defined file. Client connects to a CLI defined IP/port and downloads file, which also was define via CLI. Configurable CLI port, but defaults on TCP port 8070. Include Cargo.toml file. Ignore code explanation outside of the provided source.
