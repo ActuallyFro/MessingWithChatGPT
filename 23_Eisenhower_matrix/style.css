@@ -17,6 +17,15 @@ body {
     margin: 0 0 1rem;
     font-size: 1.2rem;
 }
+.quadrant h2 .counter {
+    font-size: 1rem;
+    font-weight: normal;
+    margin-left: 0.5rem;
+}
+.container {
+    max-height: calc(100% - 3rem);
+    overflow-y: auto;
+}
 .plus {
     position: absolute;
     top: 1rem;
@@ -33,6 +42,17 @@ body {
     position: relative;
     cursor: move;
 }
+.card-body {
+    display: none;
+    margin-top: 0.5rem;
+    white-space: pre-wrap;
+}
+.card:hover .card-body {
+    display: block;
+}
+.card.disable-hover .card-body {
+    display: block;
+}
 .minus {
     position: absolute;
     top: 0;
@@ -40,20 +60,6 @@ body {
     font-size: 1.4rem;
     cursor: pointer;
 }
-.card-body {
-    display: none;
-    margin-top: 0.5rem;
-    white-space: pre-wrap;
-}
-
-.card:hover .card-body {
-    display: block;
-}
-
-.card.disable-hover .card-body {
-    display: block;
-}
-
 input[type="text"] {
     font-family: inherit;
     font-size: inherit;
@@ -62,19 +68,6 @@ input[type="text"] {
     outline: none;
     width: 100%;
 }
-
 input[type="text"]:focus {
     outline: auto;
-}
-
-/* Add the following CSS code to style the counter */
-.quadrant h2 .counter {
-    font-size: 1rem;
-    font-weight: normal;
-    margin-left: 0.5rem;
-}
-
-.container {
-    max-height: calc(100% - 3rem);
-    overflow-y: auto;
 }
