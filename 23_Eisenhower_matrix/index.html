@@ -47,6 +47,33 @@
             font-size: 1.2rem;
             cursor: pointer;
         }
+        .card-body {
+            display: none;
+            margin-top: 0.5rem;
+            white-space: pre-wrap;
+        }
+
+        .card:hover .card-body {
+            display: block;
+        }
+
+        .card.disable-hover .card-body {
+            display: block;
+        }
+
+        input[type="text"] {
+            font-family: inherit;
+            font-size: inherit;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+
+        input[type="text"]:focus {
+            outline: auto;
+        }
+
     </style>
 </head>
 <body>
@@ -94,12 +121,43 @@
             });
             card.appendChild(minus);
 
+            const edit = document.createElement("span");
+            edit.textContent = "📝";
+            edit.className = "edit";
+            edit.style.marginLeft = "0.5rem";
+            edit.addEventListener("click", () => {
+                cardBody.style.display = cardBody.style.display === 'none' ? 'block' : 'none';
+            });
+            card.appendChild(edit);
+
+            const cardBody = document.createElement("textarea");
+            cardBody.className = "card-body";
+            cardBody.placeholder = "Enter description...";
+            card.appendChild(cardBody);
+
             card.addEventListener("dragstart", (e) => {
                 e.dataTransfer.setData("text", e.target.id);
             });
 
             return card;
         }
+
+
+        function sanitizeHTML(html) {
+            const temp = document.createElement("div");
+            temp.innerHTML = html;
+            const tagsToKeep = ['b', 'u', 'i', 'strike', 'ul', 'li'];
+            const tags = temp.getElementsByTagName("*");
+
+            for (let i = tags.length - 1; i >= 0; i--) {
+                const tag = tags[i];
+                if (tagsToKeep.indexOf(tag.tagName.toLowerCase()) === -1) {
+                    tag.outerHTML = tag.innerHTML;
+                }
+            }
+            return temp.innerHTML;
+        }
+
 
         document.querySelectorAll(".quadrant").forEach(quadrant => {
             quadrant.addEventListener("dragover", (e) => {
