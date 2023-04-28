@@ -54,10 +54,13 @@
             cardBody.placeholder = "Enter description...";
             card.appendChild(cardBody);
 
-            card.addEventListener("dragstart", (e) => {
-                e.dataTransfer.setData("text", e.target.id);
+            // Update the 'dragstart' event listener to use the 'text' format
+            document.addEventListener("dragstart", (e) => {
+                if (e.target.classList.contains("card")) {
+                    e.target.classList.add("dragging");
+                    e.dataTransfer.setData("text", e.target.id);
+                }
             });
-
 
             viewAsHtmlIcon.addEventListener("click", () => {
                 if (cardBody.tagName === "TEXTAREA") {
@@ -131,7 +134,6 @@
             return temp.innerHTML;
         }
 
-
         document.querySelectorAll(".quadrant").forEach(quadrant => {
             quadrant.addEventListener("dragover", (e) => {
                 e.preventDefault();
@@ -140,29 +142,29 @@
             // Update the 'drop' event listener to update the card counts
             quadrant.addEventListener("drop", (e) => {
                 e.preventDefault();
-                const cardId = e.dataTransfer.getData("text/plain");
+                const cardId = e.dataTransfer.getData("text");
                 const card = document.getElementById(cardId);
-                if (!card) {
-                    const draggedCard = document.querySelector('.dragging');
-                    const oldQuadrant = draggedCard.parentElement;
-                    quadrant.appendChild(draggedCard);
+                
+                if (card) {
+                    const oldQuadrant = card.parentElement;
+                    quadrant.appendChild(card);
                     updateCardCount(oldQuadrant, -1); // Decrease the card count in the old quadrant by 1
                     updateCardCount(quadrant, 1); // Increase the card count in the new quadrant by 1
                 } else {
-                    quadrant.appendChild(card);
+                    const draggedCard = document.querySelector('.dragging');
+                    if (draggedCard) {
+                        const oldQuadrant = draggedCard.parentElement;
+                        quadrant.appendChild(draggedCard);
+                        updateCardCount(oldQuadrant, -1); // Decrease the card count in the old quadrant by 1
+                        updateCardCount(quadrant, 1); // Increase the card count in the new quadrant by 1
+                    }
                 }
             });
+
 
             quadrant.addEventListener("dragenter", (e) => {
                 e.preventDefault();
             });
-        });
-
-        document.addEventListener("dragstart", (e) => {
-            if (e.target.classList.contains("card")) {
-                e.target.classList.add("dragging");
-                e.dataTransfer.setData("text/plain", e.target.id);
-            }
         });
 
         document.addEventListener("dragend", (e) => {
