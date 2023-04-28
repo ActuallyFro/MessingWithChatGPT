@@ -3,6 +3,7 @@
                 const quadrant = e.target.parentElement;
                 const card = createCard();
                 quadrant.appendChild(card);
+                updateCardCount(quadrant, 1); // Increase the card count by 1
             });
         });
 
@@ -20,8 +21,11 @@
             minus.textContent = "-";
             minus.className = "minus";
             minus.addEventListener("click", () => {
+                const quadrant = card.parentElement;
                 card.remove();
+                updateCardCount(quadrant, -1); // Decrease the card count by 1
             });
+            
             card.appendChild(minus);
 
             const edit = document.createElement("span");
@@ -103,12 +107,14 @@
                 }
             });
             
-
-
-
             return card;
         }
 
+        function updateCardCount(quadrant, change) {
+            const counter = quadrant.querySelector(".counter");
+            const newCount = parseInt(counter.textContent, 10) + change;
+            counter.textContent = newCount;
+        }
 
         function sanitizeHTML(html) {
             const temp = document.createElement("div");
@@ -131,13 +137,17 @@
                 e.preventDefault();
             });
 
+            // Update the 'drop' event listener to update the card counts
             quadrant.addEventListener("drop", (e) => {
                 e.preventDefault();
-                const cardId = e.dataTransfer.getData("text");
+                const cardId = e.dataTransfer.getData("text/plain");
                 const card = document.getElementById(cardId);
                 if (!card) {
                     const draggedCard = document.querySelector('.dragging');
+                    const oldQuadrant = draggedCard.parentElement;
                     quadrant.appendChild(draggedCard);
+                    updateCardCount(oldQuadrant, -1); // Decrease the card count in the old quadrant by 1
+                    updateCardCount(quadrant, 1); // Increase the card count in the new quadrant by 1
                 } else {
                     quadrant.appendChild(card);
                 }

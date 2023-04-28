@@ -28,6 +28,6 @@ It has 3 source files:
 ```javascript
 ```
 
-Issues: the total amount of cards should be listed as a dynamically updated number in the title for each quadrant (it currently does not), and each of the quadrants should be able to be scrolled (i.e., only four cards are shown so the fifth card is not visible, but the user should be able to scroll and see it).
+Issues: (1) the total amount of cards should be listed as a dynamically updated number in the title for each quadrant (it currently does not), and (2) each of the quadrants should be able to be scrolled to show multiple cards (i.e., only four cards can be shown so the fifth card is not visible, but the user should be able to scroll and see it).
 
 Provide a updates to the code to resolve the issues.
