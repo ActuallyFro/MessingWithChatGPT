@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphML SPA Editor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <h1>GraphML SPA Editor</h1>
+        <form id="graph-form">
+            <label for="edgedefault">Edge Default: </label>
+            <select name="edgedefault" id="edgedefault">
+                <option value="directed">Directed</option>
+                <option value="undirected">Undirected</option>
+            </select>
+            <button type="button" id="add-node">Add Node</button>
+            <button type="button" id="add-edge">Add Edge</button>
+            <button type="button" id="import-graphml">Import GraphML</button>
+            <button type="button" id="export-graphml">Export GraphML</button>
+        </form>
+        <div id="nodes-container">
+            <!-- Dynamically added nodes will appear here -->
+        </div>
+        <div id="edges-container">
+            <!-- Dynamically added edges will appear here -->
+        </div>
+        <h2>Live Preview</h2>
+        <pre id="live-preview">
+            <!-- Live preview of the GraphML XML will appear here -->
+        </pre>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

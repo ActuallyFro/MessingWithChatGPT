@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eisenhower Matrix SPA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            height: 100vh;
+            margin: 0;
+        }
+        .quadrant {
+            width: 50%;
+            height: 50%;
+            position: relative;
+            box-sizing: border-box;
+            padding: 1rem;
+            border: 1px solid #ccc;
+        }
+        .quadrant h2 {
+            margin: 0 0 1rem;
+            font-size: 1.2rem;
+        }
+        .plus {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .card {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #f0f0f0;
+            margin-bottom: 0.5rem;
+            position: relative;
+            cursor: move;
+        }
+        .minus {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="quadrant" id="q1">
+        <h2>Important & Urgent</h2>
+        <span class="plus">+</span>
+    </div>
+    <div class="quadrant" id="q2">
+        <h2>Important & Not Urgent</h2>
+        <span class="plus">+</span>
+    </div>
+    <div class="quadrant" id="q3">
+        <h2>Not Important & Urgent</h2>
+        <span class="plus">+</span>
+    </div>
+    <div class="quadrant" id="q4">
+        <h2>Not Important & Not Urgent</h2>
+        <span class="plus">+</span>
+    </div>
+
+    <script>
+        document.querySelectorAll(".plus").forEach(plus => {
+            plus.addEventListener("click", (e) => {
+                const quadrant = e.target.parentElement;
+                const card = createCard();
+                quadrant.appendChild(card);
+            });
+        });
+
+        function createCard() {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.setAttribute("draggable", "true");
+
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "Label...";
+            card.appendChild(input);
+
+            const minus = document.createElement("span");
+            minus.textContent = "-";
+            minus.className = "minus";
+            minus.addEventListener("click", () => {
+                card.remove();
+            });
+            card.appendChild(minus);
+
+            card.addEventListener("dragstart", (e) => {
+                e.dataTransfer.setData("text", e.target.id);
+            });
+
+            return card;
+        }
+
+        document.querySelectorAll(".quadrant").forEach(quadrant => {
+            quadrant.addEventListener("dragover", (e) => {
+                e.preventDefault();
+            });
+
+            quadrant.addEventListener("drop", (e) => {
+                e.preventDefault();
+                const cardId = e.dataTransfer.getData("text");
+                const card = document.getElementById(cardId);
+                if (!card) {
+                    const draggedCard = document.querySelector('.dragging');
+                    quadrant.appendChild(draggedCard);
+                } else {
+                    quadrant.appendChild(card);
+                }
+            });
+
+            quadrant.addEventListener("dragenter", (e) => {
+                e.preventDefault();
+            });
+        });
+
+        document.addEventListener("dragstart", (e) => {
+            if (e.target.classList.contains("card")) {
+                e.target.classList.add("dragging");
+                e.dataTransfer.setData("text/plain", e.target.id);
+            }
+        });
+
+        document.addEventListener("dragend", (e) => {
+            if (e.target.classList.contains("card")) {
+                e.target.classList.remove("dragging");
+            }
+        });
+    </script>
+</body>
+</html>
