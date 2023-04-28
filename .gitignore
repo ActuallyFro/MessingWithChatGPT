@@ -14,3 +14,8 @@
 
 14_RCV-tailored/target
 14_RCV-tailored/Cargo.lock
+
+15_SortHashMap/target/debug/
+16_BordaCount/target/debug/
+17_BordaCountWithStruct/target/debug/
+18_Rust_ncp/target/debug/
