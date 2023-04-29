@@ -45,6 +45,28 @@ function resetLocalStorage() {
 //==============================================================================================================
 // --------------------
 // Card and Bucket Functions
+document.querySelectorAll(".move-left").forEach(moveLeft => {
+  moveLeft.addEventListener("click", (e) => {
+    const bucket = e.target.closest(".bucket");
+    const prevBucket = bucket.previousElementSibling;
+    if (prevBucket) {
+      bucket.parentElement.insertBefore(bucket, prevBucket);
+      saveToLocalStorage();
+    }
+  });
+});
+
+document.querySelectorAll(".move-right").forEach(moveRight => {
+  moveRight.addEventListener("click", (e) => {
+    const bucket = e.target.closest(".bucket");
+    const nextBucket = bucket.nextElementSibling;
+    if (nextBucket) {
+      bucket.parentElement.insertBefore(nextBucket, bucket);
+      saveToLocalStorage();
+    }
+  });
+});
+
 document.querySelectorAll(".plus").forEach(plus => {
   plus.addEventListener("click", (e) => {
       const bucket = e.target.parentElement;
