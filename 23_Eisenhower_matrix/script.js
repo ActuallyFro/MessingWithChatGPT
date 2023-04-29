@@ -177,6 +177,7 @@ document.addEventListener("dragend", (e) => {
 });
 
 // --------------------
+// Touch Events for Mobile/Touchscreen Devices
 
 let draggedCard = null;
 
