@@ -1,50 +1,81 @@
 // --------------------
 // localStorage Functions
 function saveToLocalStorage() {
-  // console.log("[DEBUG] LocalStorage() SAVING!")
   const bucketsData = [];
   document.querySelectorAll(".bucket").forEach((bucket, index) => {
-      const cards = Array.from(bucket.querySelectorAll(".card"));
-      const cardsData = cards.map(card => {
-          return {
-              label: card.querySelector("input[type='text']").value,
-              body: card.querySelector(".card-body").outerHTML
-          };
-      });
-      bucketsData[index] = cardsData;
+    const cards = Array.from(bucket.querySelectorAll(".card"));
+    const cardsData = cards.map(card => {
+      return {
+        label: card.querySelector("input[type='text']").value,
+        body: card.querySelector(".card-body").outerHTML
+      };
+    });
+    const titleElement = bucket.querySelector(".title");
+    const title = titleElement.tagName === "INPUT" ? titleElement.value : titleElement.textContent;
+    bucketsData[index] = {
+      title: title,
+      cards: cardsData
+    };
   });
-  localStorage.setItem("eisenhowerMatrix", JSON.stringify(bucketsData));
+  localStorage.setItem("kanbanBoard", JSON.stringify(bucketsData));
 }
+
 
 function loadFromLocalStorage() {
   // console.log("[DEBUG] LocalStorage() LOADING!")
 
-  const bucketsData = JSON.parse(localStorage.getItem("eisenhowerMatrix"));
+  const bucketsData = JSON.parse(localStorage.getItem("kanbanBoard"));
   if (bucketsData) {
-      bucketsData.forEach((bucketData, index) => {
-          const bucket = document.querySelectorAll(".bucket")[index];
-          const container = bucket.querySelector(".container");
-          bucketData.forEach(cardData => {
-              const card = createCard();
-              card.querySelector("input[type='text']").value = cardData.label;
-              card.querySelector(".card-body").outerHTML = cardData.body;
-              container.appendChild(card);
-              updateCardCount(bucket, 1);
-          });
-      });
+    bucketsData.forEach((bucketData, index) => {
+      const bucket = document.querySelectorAll(".bucket")[index];
+      const container = bucket.querySelector(".container");
+      const title = bucket.querySelector(".title");
+      title.textContent = bucketData.title;
+      makeBucketTitleEditable(title); // Add this line
+      bucketData.cards.forEach(cardData => {
+            const card = createCard();
+            card.querySelector("input[type='text']").value = cardData.label;
+            card.querySelector(".card-body").outerHTML = cardData.body;
+            container.appendChild(card);
+            updateCardCount(bucket, 1);
+        });
+    });
   }
 }
 
 function resetLocalStorage() {
   // console.log("[DEBUG] LocalStorage() RESETTING!")
 
-  localStorage.removeItem("eisenhowerMatrix");
+  localStorage.removeItem("kanbanBoard");
   location.reload();
 }
 
 //==============================================================================================================
 // --------------------
 // Card and Bucket Functions
+function makeBucketTitleEditable(title) {
+  title.addEventListener("click", (e) => {
+    const target = e.target;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = target.textContent;
+    input.className = "title";
+    input.style.width = "100%";
+    target.replaceWith(input);
+    input.focus();
+
+    input.addEventListener("blur", () => {
+      target.textContent = input.value;
+      input.replaceWith(target);
+      saveToLocalStorage();
+    });
+  });
+}
+
+document.querySelectorAll(".title").forEach(title => {
+  makeBucketTitleEditable(title);
+});
+
 document.querySelectorAll(".move-left").forEach(moveLeft => {
   moveLeft.addEventListener("click", (e) => {
     const bucket = e.target.closest(".bucket");
@@ -303,7 +334,7 @@ loadFromLocalStorage();
 
 // Export function
 function exportMatrix() {
-  const bucketsData = JSON.parse(localStorage.getItem("eisenhowerMatrix")) || [];
+  const bucketsData = JSON.parse(localStorage.getItem("kanbanBoard")) || [];
   const dataStr = JSON.stringify(bucketsData);
   const dataBlob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
   const dataUrl = URL.createObjectURL(dataBlob);
@@ -324,7 +355,7 @@ function importMatrix(event) {
       const contents = e.target.result;
       try {
           const parsedData = JSON.parse(contents);
-          localStorage.setItem("eisenhowerMatrix", JSON.stringify(parsedData));
+          localStorage.setItem("kanbanBoard", JSON.stringify(parsedData));
           location.reload();
       } catch (e) {
           alert('Invalid JSON file!');

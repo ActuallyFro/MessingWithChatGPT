@@ -55,3 +55,22 @@ The following SPA implements a kanban board:
 Issue: The vertical organization of the buckets cannot be reordered. Add "<" and ">" symbols to the left of the "+" symbol to allow reordering of the buckets.
 
 Provide: edits to the code that adds implements the reordering of the buckets.
+
+=================================
+The following SPA implements a kanban board:
+```html
+``` 
+
+```css
+```
+
+```javascript
+```
+
+Issue: In the attempt to add Editable bucket titles it (1) does not allow editing (e.g., clicking on the titles to insert a new title), and (2) throws errors when trying to save the titles to LocalStorage.
+
+Current Error:
+```
+```
+
+Task: Provide fixes.
