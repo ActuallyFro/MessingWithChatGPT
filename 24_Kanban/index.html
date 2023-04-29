@@ -15,6 +15,7 @@
         <span class="move-left">&lt;</span>
         <span class="move-right">&gt;</span>
         <span class="plus">+</span>
+        <span class="x-to-remove-bucket">[X]</span>
         <div class="container"></div>
     </div>
     
@@ -23,6 +24,7 @@
         <span class="move-left">&lt;</span>
         <span class="move-right">&gt;</span>
         <span class="plus">+</span>
+        <span class="x-to-remove-bucket">[X]</span>
         <div class="container"></div>
     </div>
 
@@ -31,6 +33,7 @@
         <span class="move-left">&lt;</span>
         <span class="move-right">&gt;</span>
         <span class="plus">+</span>
+        <span class="x-to-remove-bucket">[X]</span>
         <div class="container"></div>
     </div>
     <div class="bucket" id="b4">
@@ -38,18 +41,31 @@
         <span class="move-left">&lt;</span>
         <span class="move-right">&gt;</span>
         <span class="plus">+</span>
+        <span class="x-to-remove-bucket">[X]</span>
         <div class="container"></div>
     </div>
-
+    <!-- <div class="board"></div> -->
+    <div class="bucket" id="b5">
+        <h2><span class="title" style="display: inline-block;">EXTRA</span><span class="counter">0</span></h2>
+        <span class="move-left">&lt;</span>
+        <span class="move-right">&gt;</span>
+        <span class="plus">+</span>
+        <span class="x-to-remove-bucket">[X]</span>
+        <div class="container"></div>
+    </div>
     <script src="kanban.js"></script>
 
-<hr>
+<br/>
+<hr id="Tool-Line">
+<button id="addBucketButton">Add Bucket</button>
+
 <button id="exportButton">Export</button>
 
 <label for="importButton" style="cursor:pointer">Import</label>
 <input type="file" id="importButton" style="display:none">
 
 <script>
+    // document.getElementById("addBucketButton").addEventListener("click", addBucketButton);
     document.getElementById("exportButton").addEventListener("click", exportMatrix);
     document.getElementById("importButton").addEventListener("change", importMatrix);
 </script>

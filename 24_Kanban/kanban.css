@@ -5,8 +5,9 @@ body {
   height: 100vh;
   margin: 0;
 }
+/*  -----------------------  */
 .bucket {
-  width: 25%;
+  width: 20%;
   height: 100%;
   position: relative;
   box-sizing: border-box;
@@ -22,34 +23,12 @@ body {
   font-weight: normal;
   margin-left: 0.5rem;
 }
-.move-left,
-.move-right {
-  position: absolute;
-  top: 1rem;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.move-left {
-  /* right: 2.5rem; */
-  right: 75px;
-}
-
-.move-right {
-  /* right: 1.5rem; */
-  right: 45px;
-}
+/*  -----------------------  */
 .container {
   max-height: calc(100% - 3rem);
   overflow-y: auto;
 }
-.plus {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
+
 .card {
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -70,6 +49,34 @@ body {
 .card.disable-hover .card-body {
   display: block;
 }
+.move-left,
+.move-right {
+  position: absolute;
+  top: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.move-left {
+  right: 4rem;
+}
+.move-right {
+  right: 3rem;
+}
+.x-to-remove-bucket {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.plus {
+  position: absolute;
+  top: 2rem;
+  right: 1rem;
+  font-size: 1.5rem;
+}
+/*  -----------------------  */
 .minus {
   position: absolute;
   top: 0;

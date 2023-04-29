@@ -109,6 +109,15 @@ document.querySelectorAll(".plus").forEach(plus => {
   });
 });
 
+
+// document.querySelectorAll(".x-to-remove-bucket").forEach(removeBucket => {
+//   removeBucket.addEventListener("click", (e) => {
+//     const bucket = e.target.closest(".bucket");
+//     bucket.remove();
+//     saveToLocalStorage();
+//   });
+// });
+
 function createCard() {
   const card = document.createElement("div");
   card.className = "card";
@@ -127,6 +136,7 @@ function createCard() {
       const bucket = card.parentElement.parentElement;
       card.remove();
       updateCardCount(bucket, -1);
+      saveToLocalStorage();
   });
 
   card.appendChild(minus);
@@ -331,6 +341,47 @@ return null;
 
 
 loadFromLocalStorage();
+
+
+function createBucket() {
+  const bucketCount = document.querySelectorAll(".bucket").length;
+
+  // Create a new bucket element using the template HTML
+  const bucketTemplate = `
+    <div class="bucket" id="b${bucketCount + 1}">
+      <h2><span class="title" style="display: inline-block;">New Bucket</span><span class="counter">0</span></h2>
+      <span class="move-left">&lt;</span>
+      <span class="move-right">&gt;</span>
+      <span class="plus">+</span>
+      <span class="x-to-remove-bucket">[X]</span>
+      <div class="container"></div>
+    </div>
+  `;
+
+  const bucket = document.createElement('div');
+  bucket.innerHTML = bucketTemplate.trim();
+
+  //TODO:
+  // bucket.querySelector(".x-to-remove-bucket").addEventListener("click", removeBucket);
+  // bucket.querySelector(".plus").addEventListener("click", addCard);
+  // bucket.querySelector(".move-left").addEventListener("click", moveBucketLeft);
+  // bucket.querySelector(".move-right").addEventListener("click", moveBucketRight);
+
+  // document.body.appendChild(bucket);
+  //Append the bucket BEFORE the <hr> "Tool-Line"
+  document.querySelector("hr").insertAdjacentElement("beforebegin", bucket);
+
+  // Update the bucket css 'width: %;' value to reflect the number of buckets
+  const bucketWidth = 100 / (bucketCount + 1);
+  document.querySelectorAll(".bucket").forEach(bucket => {
+      bucket.style.width = `${bucketWidth}%`;
+  });
+}
+
+function addBucketButton(){
+  createBucket();
+  saveToLocalStorage();
+}
 
 // Export function
 function exportMatrix() {
