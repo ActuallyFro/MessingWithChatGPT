@@ -22,26 +22,31 @@ function saveToLocalStorage() {
 
 
 function loadFromLocalStorage() {
-  // console.log("[DEBUG] LocalStorage() LOADING!")
+  document.querySelectorAll(".bucket").forEach(bucket => bucket.remove());
 
   const bucketsData = JSON.parse(localStorage.getItem("kanbanBoard"));
   if (bucketsData) {
     bucketsData.forEach((bucketData, index) => {
-      const bucket = document.querySelectorAll(".bucket")[index];
+      let bucket = document.querySelectorAll(".bucket")[index];
+      if (!bucket) {
+        createBucket(bucketData.title);
+        bucket = document.querySelectorAll(".bucket")[index];
+      }
       const container = bucket.querySelector(".container");
       const title = bucket.querySelector(".title");
       title.textContent = bucketData.title;
       makeBucketTitleEditable(title); // Add this line
       bucketData.cards.forEach(cardData => {
-            const card = createCard();
-            card.querySelector("input[type='text']").value = cardData.label;
-            card.querySelector(".card-body").outerHTML = cardData.body;
-            container.appendChild(card);
-            updateCardCount(bucket, 1);
-        });
+        const card = createCard();
+        card.querySelector("input[type='text']").value = cardData.label;
+        card.querySelector(".card-body").outerHTML = cardData.body;
+        container.appendChild(card);
+        updateCardCount(bucket, 1);
+      });
     });
   }
 }
+
 
 function resetLocalStorage() {
   // console.log("[DEBUG] LocalStorage() RESETTING!")
@@ -51,8 +56,100 @@ function resetLocalStorage() {
 }
 
 //==============================================================================================================
+// Bucket and Card Functions
+
 // --------------------
-// Card and Bucket Functions
+// Buckets
+
+function resizeWidthBuckets(){
+  const bucketCount = document.querySelectorAll(".bucket").length;
+
+  const bucketWidth = 100 / (bucketCount + 1);
+  console.log(`Bucket Width: ${bucketWidth}%`);
+  document.querySelectorAll(".bucket").forEach(bucket => {
+      bucket.style.width = `${bucketWidth}%`;
+  });  
+}
+
+function createBucket(bucketName="New Bucket") {
+  const bucketCount = document.querySelectorAll(".bucket").length;
+  // console.log(`Bucket Count: ${bucketCount}`);
+
+  const bucket = document.createElement('div');
+  bucket.classList.add("bucket");
+  bucket.setAttribute("id", `b${bucketCount + 1}`);
+  // bucket.setAttribute("id", `b${Date.now()}`); //NOT precise enough!
+
+  const bucketTemplate = `
+      <h2><span class="title" style="display: inline-block;">${bucketName}</span><span class="counter">0</span></h2>
+      <span class="move-left">&lt;</span>
+      <span class="move-right">&gt;</span>
+      <span class="plus">+</span>
+      <span class="x-to-remove-bucket">[X]</span>
+      <div class="container"></div>
+  `;
+  bucket.innerHTML = bucketTemplate.trim();
+  
+  bucket.querySelector(".move-left").addEventListener("click", moveBucketLeft);
+  bucket.querySelector(".move-right").addEventListener("click", moveBucketRight);
+  bucket.querySelector(".plus").addEventListener("click", addCardButton);
+  bucket.querySelector(".x-to-remove-bucket").addEventListener("click", removeBucketButton);
+
+  bucket.addEventListener("dragover", bucketDragOver);
+  bucket.addEventListener("drop", bucketDrop);
+  bucket.addEventListener("dragenter", bucketDragEnter);
+
+
+  const hrElement = document.querySelector("#Tool-Line");
+  
+  hrElement.insertAdjacentElement("beforebegin", bucket);
+
+  resizeWidthBuckets();
+
+  makeAllBucketTitlesEditable(); //Too much?!?!
+
+}
+
+function addBucketButton(){
+  createBucket();
+  saveToLocalStorage();
+}
+
+function moveBucketLeft(e) {
+  const bucket = e.target.closest(".bucket");
+  const prevBucket = bucket.previousElementSibling;
+  if (prevBucket) {
+    bucket.parentElement.insertBefore(bucket, prevBucket);
+    saveToLocalStorage();
+  }
+}
+
+function moveBucketRight(e) {
+  const bucket = e.target.closest(".bucket");
+  const nextBucket = bucket.nextElementSibling;
+  if (nextBucket) {
+    bucket.parentElement.insertBefore(nextBucket, bucket);
+    saveToLocalStorage();
+  }
+}
+
+function addCardButton(e) {
+  const bucket = e.target.parentElement;
+  const container = bucket.querySelector(".container");
+  const card = createCard();
+  container.appendChild(card);
+  updateCardCount(bucket, 1);
+  saveToLocalStorage();
+}
+
+function removeBucketButton(e) {
+  const bucket = e.target.closest(".bucket");
+  bucket.remove();
+  saveToLocalStorage();
+
+  resizeWidthBuckets();
+}
+
 function makeBucketTitleEditable(title) {
   title.addEventListener("click", (e) => {
     const target = e.target;
@@ -72,52 +169,53 @@ function makeBucketTitleEditable(title) {
   });
 }
 
-document.querySelectorAll(".title").forEach(title => {
-  makeBucketTitleEditable(title);
-});
+function makeAllBucketTitlesEditable() {
+  document.querySelectorAll(".title").forEach(title => {
+    makeBucketTitleEditable(title);
+  });
+}
 
-document.querySelectorAll(".move-left").forEach(moveLeft => {
-  moveLeft.addEventListener("click", (e) => {
-    const bucket = e.target.closest(".bucket");
-    const prevBucket = bucket.previousElementSibling;
-    if (prevBucket) {
-      bucket.parentElement.insertBefore(bucket, prevBucket);
-      saveToLocalStorage();
+function moveBucketLeft(e) {
+  const bucket = e.target.closest(".bucket");
+  const prevBucket = bucket.previousElementSibling;
+  if (prevBucket) {
+    bucket.parentElement.insertBefore(bucket, prevBucket);
+    saveToLocalStorage();
+  }
+}
+
+function bucketDragOver(e) {
+  e.preventDefault();
+}
+
+function bucketDrop(e) {
+  e.preventDefault();
+  const cardId = e.dataTransfer.getData("text");
+  const card = document.getElementById(cardId);
+  const container = e.currentTarget.querySelector(".container");
+
+  if (card) {
+    const oldBucket = card.parentElement.parentElement;
+    container.appendChild(card);
+    updateCardCount(oldBucket, -1); // Decrease the card count in the old bucket by 1
+    updateCardCount(e.currentTarget, 1); // Increase the card count in the new bucket by 1
+  } else {
+    const draggedCard = document.querySelector('.dragging');
+    if (draggedCard) {
+      const oldBucket = draggedCard.parentElement.parentElement;
+      container.appendChild(draggedCard);
+      updateCardCount(oldBucket, -1); // Decrease the card count in the old bucket by 1
+      updateCardCount(e.currentTarget, 1); // Increase the card count in the new bucket by 1
     }
-  });
-});
+  }
+}
 
-document.querySelectorAll(".move-right").forEach(moveRight => {
-  moveRight.addEventListener("click", (e) => {
-    const bucket = e.target.closest(".bucket");
-    const nextBucket = bucket.nextElementSibling;
-    if (nextBucket) {
-      bucket.parentElement.insertBefore(nextBucket, bucket);
-      saveToLocalStorage();
-    }
-  });
-});
+function bucketDragEnter(e) {
+  e.preventDefault();
+}
 
-document.querySelectorAll(".plus").forEach(plus => {
-  plus.addEventListener("click", (e) => {
-      const bucket = e.target.parentElement;
-      const container = bucket.querySelector(".container");
-      const card = createCard();
-      container.appendChild(card);
-      updateCardCount(bucket, 1);
-      saveToLocalStorage();
-  });
-});
-
-
-// document.querySelectorAll(".x-to-remove-bucket").forEach(removeBucket => {
-//   removeBucket.addEventListener("click", (e) => {
-//     const bucket = e.target.closest(".bucket");
-//     bucket.remove();
-//     saveToLocalStorage();
-//   });
-// });
-
+// --------------------
+// Cards
 function createCard() {
   const card = document.createElement("div");
   card.className = "card";
@@ -234,39 +332,6 @@ function sanitizeHTML(html) {
   return temp.innerHTML;
 }
 
-document.querySelectorAll(".bucket").forEach(bucket => {
-  bucket.addEventListener("dragover", (e) => {
-      e.preventDefault();
-  });
-
-  // Update the 'drop' event listener to update the card counts
-  bucket.addEventListener("drop", (e) => {
-      e.preventDefault();
-      const cardId = e.dataTransfer.getData("text");
-      const card = document.getElementById(cardId);
-      const container = bucket.querySelector(".container");
-                  
-      if (card) {
-          const oldBucket = card.parentElement.parentElement;
-          container.appendChild(card);
-          updateCardCount(oldBucket, -1); // Decrease the card count in the old bucket by 1
-          updateCardCount(bucket, 1); // Increase the card count in the new bucket by 1
-      } else {
-          const draggedCard = document.querySelector('.dragging');
-          if (draggedCard) {
-              const oldBucket = draggedCard.parentElement.parentElement;
-              container.appendChild(draggedCard);
-              updateCardCount(oldBucket, -1); // Decrease the card count in the old bucket by 1
-              updateCardCount(bucket, 1); // Increase the card count in the new bucket by 1
-          }
-      }
-  });
-
-
-  bucket.addEventListener("dragenter", (e) => {
-      e.preventDefault();
-  });
-});
 //==============================================================================================================
 // Touch Events for Mouse-based events
 document.addEventListener("dragstart", (e) => {
@@ -339,49 +404,8 @@ return null;
 }
 
 
-
-loadFromLocalStorage();
-
-
-function createBucket() {
-  const bucketCount = document.querySelectorAll(".bucket").length;
-
-  // Create a new bucket element using the template HTML
-  const bucketTemplate = `
-    <div class="bucket" id="b${bucketCount + 1}">
-      <h2><span class="title" style="display: inline-block;">New Bucket</span><span class="counter">0</span></h2>
-      <span class="move-left">&lt;</span>
-      <span class="move-right">&gt;</span>
-      <span class="plus">+</span>
-      <span class="x-to-remove-bucket">[X]</span>
-      <div class="container"></div>
-    </div>
-  `;
-
-  const bucket = document.createElement('div');
-  bucket.innerHTML = bucketTemplate.trim();
-
-  //TODO:
-  // bucket.querySelector(".x-to-remove-bucket").addEventListener("click", removeBucket);
-  // bucket.querySelector(".plus").addEventListener("click", addCard);
-  // bucket.querySelector(".move-left").addEventListener("click", moveBucketLeft);
-  // bucket.querySelector(".move-right").addEventListener("click", moveBucketRight);
-
-  // document.body.appendChild(bucket);
-  //Append the bucket BEFORE the <hr> "Tool-Line"
-  document.querySelector("hr").insertAdjacentElement("beforebegin", bucket);
-
-  // Update the bucket css 'width: %;' value to reflect the number of buckets
-  const bucketWidth = 100 / (bucketCount + 1);
-  document.querySelectorAll(".bucket").forEach(bucket => {
-      bucket.style.width = `${bucketWidth}%`;
-  });
-}
-
-function addBucketButton(){
-  createBucket();
-  saveToLocalStorage();
-}
+//==============================================================================================================
+// Data IO
 
 // Export function
 function exportMatrix() {
@@ -414,3 +438,20 @@ function importMatrix(event) {
   };
   reader.readAsText(file);
 }
+
+//==============================================================================================================
+// Automatic functions when the page loads:
+loadFromLocalStorage();
+
+if (document.querySelectorAll(".bucket").length === 0) {
+
+  createBucket("Backlog");
+  createBucket("Blocked");
+  createBucket("In Progress");
+  createBucket("Done");
+
+}
+
+document.getElementById("addBucketButton").addEventListener("click", addBucketButton);
+document.getElementById("exportButton").addEventListener("click", exportMatrix);
+document.getElementById("importButton").addEventListener("change", importMatrix);

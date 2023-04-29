@@ -10,67 +10,19 @@
 
 </head>
 <body>
-    <div class="bucket" id="b1">
-        <h2><span class="title" style="display: inline-block;">Backlog</span><span class="counter">0</span></h2>
-        <span class="move-left">&lt;</span>
-        <span class="move-right">&gt;</span>
-        <span class="plus">+</span>
-        <span class="x-to-remove-bucket">[X]</span>
-        <div class="container"></div>
-    </div>
-    
-    <div class="bucket" id="b2">
-        <h2><span class="title" style="display: inline-block;">Blocked</span><span class="counter">0</span></h2>
-        <span class="move-left">&lt;</span>
-        <span class="move-right">&gt;</span>
-        <span class="plus">+</span>
-        <span class="x-to-remove-bucket">[X]</span>
-        <div class="container"></div>
-    </div>
-
-    <div class="bucket" id="b3">
-        <h2><span class="title" style="display: inline-block;">In Progress</span><span class="counter">0</span></h2>
-        <span class="move-left">&lt;</span>
-        <span class="move-right">&gt;</span>
-        <span class="plus">+</span>
-        <span class="x-to-remove-bucket">[X]</span>
-        <div class="container"></div>
-    </div>
-    <div class="bucket" id="b4">
-        <h2><span class="title" style="display: inline-block;">Done</span><span class="counter">0</span></h2>
-        <span class="move-left">&lt;</span>
-        <span class="move-right">&gt;</span>
-        <span class="plus">+</span>
-        <span class="x-to-remove-bucket">[X]</span>
-        <div class="container"></div>
-    </div>
-    <!-- <div class="board"></div> -->
-    <div class="bucket" id="b5">
-        <h2><span class="title" style="display: inline-block;">EXTRA</span><span class="counter">0</span></h2>
-        <span class="move-left">&lt;</span>
-        <span class="move-right">&gt;</span>
-        <span class="plus">+</span>
-        <span class="x-to-remove-bucket">[X]</span>
-        <div class="container"></div>
-    </div>
-    <script src="kanban.js"></script>
 
 <br/>
 <hr id="Tool-Line">
-<button id="addBucketButton">Add Bucket</button>
+<div>
+    <button id="addBucketButton">Add Bucket</button>
+    <button id="exportButton">Export</button>
+    <label for="importButton" style="cursor:pointer">Import</label>
+    <input type="file" id="importButton" style="display:none">
 
-<button id="exportButton">Export</button>
+    <script src="kanban.js"></script>
 
-<label for="importButton" style="cursor:pointer">Import</label>
-<input type="file" id="importButton" style="display:none">
-
-<script>
-    // document.getElementById("addBucketButton").addEventListener("click", addBucketButton);
-    document.getElementById("exportButton").addEventListener("click", exportMatrix);
-    document.getElementById("importButton").addEventListener("change", importMatrix);
-</script>
-
-<button id="resetButton" onclick="resetLocalStorage()">Reset LocalStorage</button>
+    <button id="resetButton" onclick="resetLocalStorage()">Reset LocalStorage</button>
+</div>
 
 </body>
 </html>
