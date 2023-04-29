@@ -2,6 +2,7 @@ const board = document.getElementById('board');
 const addBucketBtn = document.getElementById('add-bucket-btn');
 const exportJsonBtn = document.getElementById('export-json-btn');
 const importJsonBtn = document.getElementById('import-json-btn');
+const resetLocalStorageBtn = document.getElementById('reset-localstorage-btn');
 
 let bucketCount = 1;
 
@@ -122,5 +123,14 @@ importJsonBtn.addEventListener('change', (event) => {
   };
   reader.readAsText(file);
 });
+
+
+function resetLocalStorage() {
+  localStorage.removeItem('kanbanBoard');
+  location.reload();
+}
+
+resetLocalStorageBtn.addEventListener('click', resetLocalStorage);
+
 
 loadBoardState();
