@@ -49,3 +49,25 @@ It has 3 source files:
 Issue: When the total cards exceed a quadrant, they cannot be selected. Also the cards overflow their display on to lower quadrants. Each of the quadrants should be able to be scrolled to show multiple cards
 
 Provide a updates to the code to resolve the issues.
+
+=========================
+
+The following SPA is an dynamic Eisenhower Matrix. It adds/removes cards, has movable cards to other quadrants, and the Card body is supposed to allow a textarea editor which renders as HTML.
+
+It has 3 source files:
+```html
+``` 
+
+```css
+```
+
+```javascript
+```
+
+Issue: All cards are lost on page refresh.
+
+Provide: localstorage saving, loading, and a button to reset localstorage.
+
+Regarding localstorage saving: save after any (1) input into textarea, (2) finish of a dragend, or (3) finish of a touchend, -- save all cards/quadrants to localstorage.
+
+Regarding localstorage loading: when the page loads, restore any cards to their proper quadrants from localstorage.

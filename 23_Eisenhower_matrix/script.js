@@ -1,3 +1,50 @@
+// --------------------
+// localStorage Functions
+function saveToLocalStorage() {
+    // console.log("[DEBUG] LocalStorage() SAVING!")
+    const quadrantsData = [];
+    document.querySelectorAll(".quadrant").forEach((quadrant, index) => {
+        const cards = Array.from(quadrant.querySelectorAll(".card"));
+        const cardsData = cards.map(card => {
+            return {
+                label: card.querySelector("input[type='text']").value,
+                body: card.querySelector(".card-body").outerHTML
+            };
+        });
+        quadrantsData[index] = cardsData;
+    });
+    localStorage.setItem("eisenhowerMatrix", JSON.stringify(quadrantsData));
+}
+
+function loadFromLocalStorage() {
+    // console.log("[DEBUG] LocalStorage() LOADING!")
+
+    const quadrantsData = JSON.parse(localStorage.getItem("eisenhowerMatrix"));
+    if (quadrantsData) {
+        quadrantsData.forEach((quadrantData, index) => {
+            const quadrant = document.querySelectorAll(".quadrant")[index];
+            const container = quadrant.querySelector(".container");
+            quadrantData.forEach(cardData => {
+                const card = createCard();
+                card.querySelector("input[type='text']").value = cardData.label;
+                card.querySelector(".card-body").outerHTML = cardData.body;
+                container.appendChild(card);
+                updateCardCount(quadrant, 1);
+            });
+        });
+    }
+}
+
+function resetLocalStorage() {
+    // console.log("[DEBUG] LocalStorage() RESETTING!")
+
+    localStorage.removeItem("eisenhowerMatrix");
+    location.reload();
+}
+
+//==============================================================================================================
+// --------------------
+// Card and Quadrant Functions
 document.querySelectorAll(".plus").forEach(plus => {
     plus.addEventListener("click", (e) => {
         const quadrant = e.target.parentElement;
@@ -5,6 +52,7 @@ document.querySelectorAll(".plus").forEach(plus => {
         const card = createCard();
         container.appendChild(card);
         updateCardCount(quadrant, 1);
+        saveToLocalStorage();
     });
 });
 
@@ -13,10 +61,11 @@ function createCard() {
     card.className = "card";
     card.setAttribute("draggable", "true");
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.placeholder = "Label...";
-    card.appendChild(input);
+    const cardLabelInput = document.createElement("input");
+    cardLabelInput.addEventListener("input", saveToLocalStorage);
+    cardLabelInput.type = "text";
+    cardLabelInput.placeholder = "Label...";
+    card.appendChild(cardLabelInput);
 
     const minus = document.createElement("span");
     minus.textContent = "-";
@@ -26,18 +75,8 @@ function createCard() {
         card.remove();
         updateCardCount(quadrant, -1);
     });
-    
-    
-    card.appendChild(minus);
 
-    const edit = document.createElement("span");
-    edit.textContent = "📝";
-    edit.className = "edit";
-    edit.style.marginLeft = "0.5rem";
-    edit.addEventListener("click", () => {
-        cardBody.style.display = cardBody.style.display === 'none' ? 'block' : 'none';
-    });
-    card.appendChild(edit);
+    card.appendChild(minus);
 
     const viewAsHtmlIcon = document.createElement("i");
     viewAsHtmlIcon.className = "fas fa-eye view-as-html";
@@ -50,19 +89,11 @@ function createCard() {
     editIcon.style.marginLeft = "0.5rem";
     card.appendChild(editIcon);
 
-
     let cardBody = document.createElement("textarea");
     cardBody.className = "card-body";
     cardBody.placeholder = "Enter description...";
+    
     card.appendChild(cardBody);
-
-    // Update the 'dragstart' event listener to use the 'text' format
-    document.addEventListener("dragstart", (e) => {
-        if (e.target.classList.contains("card")) {
-            e.target.classList.add("dragging");
-            e.dataTransfer.setData("text", e.target.id);
-        }
-    });
 
     viewAsHtmlIcon.addEventListener("click", () => {
         if (cardBody.tagName === "TEXTAREA") {
@@ -74,6 +105,7 @@ function createCard() {
             cardBody = renderedHtml;
             viewAsHtmlIcon.style.display = "none";
             editIcon.style.display = "inline";
+
         } else {
             const textarea = document.createElement("textarea");
             textarea.className = "card-body";
@@ -81,6 +113,7 @@ function createCard() {
             textarea.innerHTML = cardBody.innerHTML;
             card.replaceChild(textarea, cardBody);
             cardBody = textarea;
+
             viewAsHtmlIcon.style.display = "inline";
             editIcon.style.display = "none";
         }
@@ -95,8 +128,10 @@ function createCard() {
             textarea.value = cardBody.innerHTML; // Change this line
             card.replaceChild(textarea, cardBody);
             cardBody = textarea;
+
             viewAsHtmlIcon.style.display = "inline";
             editIcon.style.display = "none";
+
         } else {
             const newCardBody = document.createElement("div");
             newCardBody.className = "card-body";
@@ -169,18 +204,26 @@ document.querySelectorAll(".quadrant").forEach(quadrant => {
         e.preventDefault();
     });
 });
+//==============================================================================================================
+// Touch Events for Mouse-based events
+document.addEventListener("dragstart", (e) => {
+    if (e.target.classList.contains("card")) {
+        e.target.classList.add("dragging");
+        e.dataTransfer.setData("text", e.target.id);
+    }
+});
 
 document.addEventListener("dragend", (e) => {
     if (e.target.classList.contains("card")) {
         e.target.classList.remove("dragging");
     }
+    saveToLocalStorage();
 });
 
 // --------------------
 // Touch Events for Mobile/Touchscreen Devices
 
 let draggedCard = null;
-// old/starting quadrant
 let StartingQuadrant = null;
 
 
@@ -216,6 +259,7 @@ document.addEventListener("touchend", (e) => {
       draggedCard.style.left = "";
       draggedCard.style.top = "";
       draggedCard = null;
+      saveToLocalStorage();
     }
   });
   
@@ -230,3 +274,5 @@ function findQuadrant(x, y) {
   }
   return null;
 }
+
+loadFromLocalStorage();
