@@ -180,10 +180,14 @@ document.addEventListener("dragend", (e) => {
 // Touch Events for Mobile/Touchscreen Devices
 
 let draggedCard = null;
+// old/starting quadrant
+let StartingQuadrant = null;
+
 
 document.addEventListener("touchstart", (e) => {
   if (e.target.classList.contains("card")) {
     draggedCard = e.target;
+    StartingQuadrant = draggedCard.parentElement.parentElement;
   }
 });
 
@@ -197,21 +201,24 @@ document.addEventListener("touchmove", (e) => {
 });
 
 document.addEventListener("touchend", (e) => {
-  if (draggedCard) {
-    const quadrant = findQuadrant(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-    if (quadrant) {
-      const container = quadrant.querySelector(".container");
-      container.appendChild(draggedCard);
-      const oldQuadrant = draggedCard.parentElement.parentElement;
-      updateCardCount(oldQuadrant, -1); // Decrease the card count in the old quadrant by 1
-      updateCardCount(quadrant, 1); // Increase the card count in the new quadrant by 1
+    if (draggedCard) {
+      const touchX = e.changedTouches[0].clientX;
+      const touchY = e.changedTouches[0].clientY;
+      const quadrant = document.elementFromPoint(touchX, touchY).closest(".quadrant");
+      if (quadrant) {
+        const container = quadrant.querySelector(".container");
+        container.appendChild(draggedCard);
+        const newQuadrant = draggedCard.parentElement.parentElement;
+        updateCardCount(StartingQuadrant, -1);
+        updateCardCount(newQuadrant, 1);
+      }
+      draggedCard.style.position = "";
+      draggedCard.style.left = "";
+      draggedCard.style.top = "";
+      draggedCard = null;
     }
-    draggedCard.style.position = "";
-    draggedCard.style.left = "";
-    draggedCard.style.top = "";
-    draggedCard = null;
-  }
-});
+  });
+  
 
 function findQuadrant(x, y) {
   const quadrants = document.querySelectorAll(".quadrant");
