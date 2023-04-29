@@ -175,3 +175,50 @@ document.addEventListener("dragend", (e) => {
         e.target.classList.remove("dragging");
     }
 });
+
+// --------------------
+
+let draggedCard = null;
+
+document.addEventListener("touchstart", (e) => {
+  if (e.target.classList.contains("card")) {
+    draggedCard = e.target;
+  }
+});
+
+document.addEventListener("touchmove", (e) => {
+  if (draggedCard) {
+    e.preventDefault();
+    draggedCard.style.position = "absolute";
+    draggedCard.style.left = e.touches[0].clientX + "px";
+    draggedCard.style.top = e.touches[0].clientY + "px";
+  }
+});
+
+document.addEventListener("touchend", (e) => {
+  if (draggedCard) {
+    const quadrant = findQuadrant(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    if (quadrant) {
+      const container = quadrant.querySelector(".container");
+      container.appendChild(draggedCard);
+      const oldQuadrant = draggedCard.parentElement.parentElement;
+      updateCardCount(oldQuadrant, -1); // Decrease the card count in the old quadrant by 1
+      updateCardCount(quadrant, 1); // Increase the card count in the new quadrant by 1
+    }
+    draggedCard.style.position = "";
+    draggedCard.style.left = "";
+    draggedCard.style.top = "";
+    draggedCard = null;
+  }
+});
+
+function findQuadrant(x, y) {
+  const quadrants = document.querySelectorAll(".quadrant");
+  for (let i = 0; i < quadrants.length; i++) {
+    const rect = quadrants[i].getBoundingClientRect();
+    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+      return quadrants[i];
+    }
+  }
+  return null;
+}
