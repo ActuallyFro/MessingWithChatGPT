@@ -1,49 +1,73 @@
 body {
   font-family: Arial, sans-serif;
-}
-
-#board {
   display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  height: 100vh;
+  margin: 0;
 }
-
 .bucket {
-  background-color: #f0f0f0;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 10px;
-  width: 300px;
-  min-height: 200px;
+  width: 25%;
+  height: 100%;
   position: relative;
+  box-sizing: border-box;
+  padding: 1rem;
+  border: 1px solid #ccc;
 }
-
-.bucket-title {
+.bucket h2 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+}
+.bucket h2 .counter {
+  font-size: 1rem;
+  font-weight: normal;
+  margin-left: 0.5rem;
+}
+.container {
+  max-height: calc(100% - 3rem);
+  overflow-y: auto;
+}
+.plus {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
   cursor: pointer;
 }
-
-.task {
-  background-color: white;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
+.card {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f0f0f0;
+  margin-bottom: 0.5rem;
+  position: relative;
   cursor: move;
 }
-
-.add-task-btn {
-  margin-bottom: 10px;
+.card-body {
+  display: none;
+  margin-top: 0.5rem;
+  white-space: pre-wrap;
 }
-
-button {
-  background-color: #007bff;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  margin: 4px 2px;
+.card:hover .card-body {
+  display: block;
+}
+.card.disable-hover .card-body {
+  display: block;
+}
+.minus {
+  position: absolute;
+  top: 0;
+  right: 15px;
+  font-size: 1.4rem;
   cursor: pointer;
-  border-radius: 5px;
+}
+input[type="text"] {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+input[type="text"]:focus {
+  outline: auto;
 }

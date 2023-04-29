@@ -3,23 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kanban Board</title>
+    <title>Kanban SPA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <link rel="stylesheet" href="kanban.css">
+
 </head>
 <body>
-    <div id="board">
-        <div class="bucket" id="bucket-1">
-            <h2 class="bucket-title">Bucket 1</h2>
-            <button class="add-task-btn">Add Task</button>
-            <div class="task-list"></div>
-        </div>
+    <div class="bucket" id="b1">
+        <h2>Backlog <span class="counter">0</span></h2>
+        <span class="plus">+</span>
+        <div class="container"></div>
     </div>
-    <button id="add-bucket-btn">Add Bucket</button>
-    <button id="export-json-btn">Export JSON</button>
-    <input type="file" id="import-json-btn" style="display: none">
-    <label for="import-json-btn" id="import-json-label">Import JSON</label>
-    <button id="reset-localstorage-btn">Reset LocalStorage</button>
+    
+    <div class="bucket" id="b2">
+        <h2>Blocked <span class="counter">0</span></h2>
+        <span class="plus">+</span>
+        <div class="container"></div>
+    </div>
+
+    <div class="bucket" id="b3">
+        <h2>In Progress <span class="counter">0</span></h2>
+        <span class="plus">+</span>
+        <div class="container"></div>
+    </div>
+    <div class="bucket" id="b4">
+        <h2>Done<span class="counter">0</span></h2>
+        <span class="plus">+</span>
+        <div class="container"></div>
+    </div>
 
     <script src="kanban.js"></script>
+
+<hr>
+<button id="exportButton">Export</button>
+
+<label for="importButton" style="cursor:pointer">Import</label>
+<input type="file" id="importButton" style="display:none">
+
+<script>
+    document.getElementById("exportButton").addEventListener("click", exportMatrix);
+    document.getElementById("importButton").addEventListener("change", importMatrix);
+</script>
+
+<button id="resetButton" onclick="resetLocalStorage()">Reset LocalStorage</button>
+
 </body>
 </html>
