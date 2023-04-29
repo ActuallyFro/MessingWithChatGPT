@@ -1,4 +1,36 @@
 // --------------------
+// Board Title Functions
+function makeBoardTitleEditable() {
+  const title = document.getElementById("boardTitle");
+  title.addEventListener("click", (e) => {
+    const target = e.target;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = target.textContent;
+    input.id = "boardTitle";
+    input.className = "board-title";
+    input.style.width = "100%";
+    target.replaceWith(input);
+    input.focus();
+
+    input.addEventListener("blur", () => {
+      target.textContent = input.value;
+      input.replaceWith(target);
+      localStorage.setItem("boardTitle", target.textContent);
+    });
+  });
+}
+
+// Load the board title from LocalStorage during initialization
+function loadBoardTitleFromLocalStorage() {
+  const savedTitle = localStorage.getItem("boardTitle");
+  if (savedTitle) {
+    const titleElement = document.getElementById("boardTitle");
+    titleElement.textContent = savedTitle;
+  }
+}
+
+// --------------------
 // localStorage Functions
 function saveToLocalStorage() {
   const bucketsData = [];
@@ -245,18 +277,22 @@ function createCard() {
   const viewAsHtmlIcon = document.createElement("i");
   viewAsHtmlIcon.className = "fas fa-eye view-as-html";
   viewAsHtmlIcon.style.marginLeft = "0.5rem";
+  viewAsHtmlIcon.style.display = "none";
   card.appendChild(viewAsHtmlIcon);
 
   const editIcon = document.createElement("i");
   editIcon.className = "fas fa-edit edit";
-  editIcon.style.display = "none";
   editIcon.style.marginLeft = "0.5rem";
   card.appendChild(editIcon);
 
-  let cardBody = document.createElement("textarea");
+  let cardBody = document.createElement("div"); // Change this line
   cardBody.className = "card-body";
   cardBody.placeholder = "Enter description...";
   
+  // Update initial state of viewAsHtmlIcon and editIcon
+  viewAsHtmlIcon.style.display = "inline";
+  editIcon.style.display = "none";
+
   card.appendChild(cardBody);
 
   viewAsHtmlIcon.addEventListener("click", () => {
@@ -282,7 +318,6 @@ function createCard() {
           editIcon.style.display = "none";
       }
   });
-
 
   editIcon.addEventListener("click", () => {
       if (cardBody.tagName === "DIV") {
@@ -407,43 +442,82 @@ return null;
 }
 
 
+
 //==============================================================================================================
 // Data IO
 
 // Export function
 function exportMatrix() {
-  const bucketsData = JSON.parse(localStorage.getItem("kanbanBoard")) || [];
-  const dataStr = JSON.stringify(bucketsData);
-  const dataBlob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
-  const dataUrl = URL.createObjectURL(dataBlob);
+  const boardTitle = document.querySelector(".board-title").textContent;
 
-  const link = document.createElement('a');
-  link.href = dataUrl;
-  link.download = 'eisenhower_matrix.json';
+  const data = {
+      boardTitle: boardTitle,
+      bucketsData: JSON.parse(localStorage.getItem("kanbanBoard")),
+  };
+
+  const ISOdateTime = new Date().toISOString().replace(/:/g, '-').replace('.', '_');
+  const fileName = "Kanban_" + boardTitle.replace(/ /g, "-") + "-" + ISOdateTime + ".json";
+
+  const fileContent = JSON.stringify(data, null, 2);
+  const file = new Blob([fileContent], { type: "application/json" });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(file);
+  link.download = fileName;
   link.click();
 }
 
 // Import function
 function importMatrix(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+    const input = event.target;
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-      const contents = e.target.result;
-      try {
-          const parsedData = JSON.parse(contents);
-          localStorage.setItem("kanbanBoard", JSON.stringify(parsedData));
-          location.reload();
-      } catch (e) {
-          alert('Invalid JSON file!');
-      }
-  };
-  reader.readAsText(file);
+    if (input.files.length === 0) {
+        alert('No file selected!');
+        return;
+    }
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+        const fileContent = event.target.result;
+        
+        try {
+            const jsonData = JSON.parse(fileContent);
+            
+            // Read and set the board title
+            const boardTitle = jsonData.boardTitle;
+            if (boardTitle) {
+                // Set the Board Title in your application
+                // Replace the following line with the relevant code to set the Board Title in your application
+                document.querySelector(".board-title").textContent = boardTitle;
+            }
+
+            // Update the buckets data
+            const bucketsData = jsonData.bucketsData;
+            if (bucketsData) {
+                localStorage.setItem("kanbanBoard", JSON.stringify(bucketsData));
+                location.reload();
+            } else {
+                alert('Invalid file format!');
+            }
+        } catch (error) {
+            alert('Error parsing JSON file: ' + error.message);
+        }
+    };
+
+    reader.onerror = () => {
+        alert('Error reading file!');
+    };
+
+    reader.readAsText(file);
 }
+
 
 //==============================================================================================================
 // Automatic functions when the page loads:
+makeBoardTitleEditable();
+loadBoardTitleFromLocalStorage();
 loadFromLocalStorage();
 
 if (document.querySelectorAll(".bucket").length === 0) {
