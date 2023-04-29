@@ -71,3 +71,21 @@ Provide: localstorage saving, loading, and a button to reset localstorage.
 Regarding localstorage saving: save after any (1) input into textarea, (2) finish of a dragend, or (3) finish of a touchend, -- save all cards/quadrants to localstorage.
 
 Regarding localstorage loading: when the page loads, restore any cards to their proper quadrants from localstorage.
+
+=========================
+
+The following SPA is an dynamic Eisenhower Matrix. It adds/removes cards, has movable cards to other quadrants, and the Card body is supposed to allow a textarea editor which renders as HTML.
+
+It has 3 source files:
+```html
+``` 
+
+```css
+```
+
+```javascript
+```
+
+Issue: LocalStorage can be deleted, thus a backup and restore function (via import/export) should exist.
+
+Provide: edits to the code that adds an import and export button, left of "Reset LocalStorage" button, which will export the Matrix to a JSON file, and import from a JSON file.

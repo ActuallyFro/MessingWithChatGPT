@@ -275,4 +275,52 @@ function findQuadrant(x, y) {
   return null;
 }
 
+
+
 loadFromLocalStorage();
+
+// Export function
+function exportMatrix() {
+    const quadrantsData = JSON.parse(localStorage.getItem("eisenhowerMatrix")) || [];
+    const dataStr = JSON.stringify(quadrantsData);
+    const dataBlob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
+    const dataUrl = URL.createObjectURL(dataBlob);
+
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = 'eisenhower_matrix.json';
+    link.click();
+}
+
+// Import function
+function importMatrix(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const contents = e.target.result;
+        try {
+            const parsedData = JSON.parse(contents);
+            localStorage.setItem("eisenhowerMatrix", JSON.stringify(parsedData));
+            location.reload();
+        } catch (e) {
+            alert('Invalid JSON file!');
+        }
+    };
+    reader.readAsText(file);
+}
+
+// Attach click event listeners to the export and import buttons
+//const exportMatrixBtn = document.getElementById("exportMatrix");
+//exportMatrixBtn.addEventListener("click", () => {
+//    exportMatrix();
+//});
+
+//const importMatrixBtn = document.getElementById("importMatrix");
+//importMatrixBtn.addEventListener("change", (e) => {
+//    importMatrix(e);
+//});
+
+
+
