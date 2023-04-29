@@ -100,9 +100,12 @@ function createBucket(bucketName="New Bucket") {
   bucket.addEventListener("dragenter", bucketDragEnter);
 
 
-  const hrElement = document.querySelector("#Tool-Line");
-  
-  hrElement.insertAdjacentElement("beforebegin", bucket);
+  // const hrElement = document.querySelector("#Tool-Line");
+  // hrElement.insertAdjacentElement("beforebegin", bucket);
+
+  // Find "buckets" <div> and insert new bucket with in, at the end
+  const bucketsElement = document.querySelector(".buckets");
+  bucketsElement.insertAdjacentElement("beforeend", bucket);
 
   resizeWidthBuckets();
 

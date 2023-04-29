@@ -1,12 +1,23 @@
-body {
+/* body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: wrap;
+  /* flex-direction: column;
+  height: 100vh;
+  margin: 0;
+} */
+.buckets {
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: wrap;
   /* flex-direction: column; */
   height: 100vh;
   margin: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-grow: 1;
+  overflow: auto;
 }
-
 /*  -----------------------  */
 .bucket {
   flex: 1;
@@ -17,12 +28,6 @@ body {
   padding: 1rem;
   border: 1px solid #ccc;
 }
-/* .buckets {
-  display: flex;
-  flex-wrap: nowrap;
-  flex-grow: 1;
-  overflow: auto;
-} */
 .bucket h2 {
   margin: 0 0 1rem;
   font-size: 1.2rem;
@@ -34,17 +39,17 @@ body {
 }
 
 .controls {
-  display: flex;
-  align-items: center;
+  /* display: flex; */
+  align-items: right;
   justify-content: space-between;
   padding: 1rem;
 }
 
-#Tool-Line {
+/* #Tool-Line {
   margin: 0;
   border: none;
   border-top: 1px solid #ccc;
-}
+} */
 /*  -----------------------  */
 .container {
   max-height: calc(100% - 3rem);

@@ -7,19 +7,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="kanban.css">
-
 </head>
 <body>
-
+    <div class="buckets" id="buckets"></div>
 <br/>
-<hr id="Tool-Line">
-<div class="controls">
-    <button id="addBucketButton">Add Bucket</button>
-    <button id="exportButton">Export</button>
-    <label for="importButton" style="cursor:pointer">Import</label>
-    <input type="file" id="importButton" style="display:none">
-    <button id="resetButton" onclick="resetLocalStorage()">Reset LocalStorage</button>
-</div>
+    <hr id="Tool-Line">
+    <div class="controls">
+        <button id="addBucketButton">Add Bucket</button>
+        <button id="exportButton">Export</button>
+        <label for="importButton" style="cursor:pointer">Import</label>
+        <input type="file" id="importButton" style="display:none">
+        <button id="resetButton" onclick="resetLocalStorage()">Reset LocalStorage</button>
+    </div>
 
 <script src="kanban.js"></script>
 
