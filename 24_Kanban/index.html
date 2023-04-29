@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board</title>
+    <link rel="stylesheet" href="kanban.css">
+</head>
+<body>
+    <div id="board">
+        <div class="bucket" id="bucket-1">
+            <h2 class="bucket-title">Bucket 1</h2>
+            <button class="add-task-btn">Add Task</button>
+            <div class="task-list"></div>
+        </div>
+    </div>
+    <button id="add-bucket-btn">Add Bucket</button>
+    <button id="export-json-btn">Export JSON</button>
+    <input type="file" id="import-json-btn" style="display: none">
+    <label for="import-json-btn" id="import-json-label">Import JSON</label>
+    <script src="kanban.js"></script>
+</body>
+</html>

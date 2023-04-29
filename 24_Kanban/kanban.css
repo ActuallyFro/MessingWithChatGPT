@@ -1,0 +1,49 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+#board {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.bucket {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  width: 300px;
+  min-height: 200px;
+  position: relative;
+}
+
+.bucket-title {
+  cursor: pointer;
+}
+
+.task {
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: move;
+}
+
+.add-task-btn {
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
