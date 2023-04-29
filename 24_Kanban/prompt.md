@@ -1,6 +1,6 @@
 The following SPA aims to implements a kanban board with the following requirements:
 1. At leverages localstorage for saving
-2. It can be exported or imported as a JSON file
+2. It can be exported or imported as a JSON file [completed]
 3. It can have expandable and re-labelable buckets (or swim lanes)
 4. A task can be added to any given swim lane
 5. A task can be dragged and dropped to any bucket
