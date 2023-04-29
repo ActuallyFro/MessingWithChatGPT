@@ -42,3 +42,16 @@ Issue: a Kanban board is needed, but MOST of the features are already implemente
 Provide modified code  to create a Kanban board. Replace the quadrants to have expandable and re-label-able buckets (or swim lanes). Also, the swim-lanes should have '<' and '>' symbols, left of the existing '+' symbol to allow reordering of the swim-lanes.
 
 =================================
+The following SPA implements a kanban board:
+```html
+``` 
+
+```css
+```
+
+```javascript
+```
+
+Issue: The vertical organization of the buckets cannot be reordered. Add "<" and ">" symbols to the left of the "+" symbol to allow reordering of the buckets.
+
+Provide: edits to the code that adds implements the reordering of the buckets.
