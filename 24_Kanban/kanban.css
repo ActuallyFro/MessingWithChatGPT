@@ -1,11 +1,3 @@
-/* body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: wrap;
-  /* flex-direction: column;
-  height: 100vh;
-  margin: 0;
-} */
 .buckets {
   font-family: Arial, sans-serif;
   display: flex;
@@ -45,11 +37,6 @@
   padding: 1rem;
 }
 
-/* #Tool-Line {
-  margin: 0;
-  border: none;
-  border-top: 1px solid #ccc;
-} */
 /*  -----------------------  */
 .container {
   max-height: calc(100% - 3rem);
