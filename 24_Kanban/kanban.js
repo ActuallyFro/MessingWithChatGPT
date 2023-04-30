@@ -71,13 +71,70 @@ function loadFromLocalStorage() {
       bucketData.cards.forEach(cardData => {
         const card = createCard();
         card.querySelector("input[type='text']").value = cardData.label;
-        card.querySelector(".card-body").outerHTML = cardData.body;
+
+        const cardBody = card.querySelector(".card-body");
+        if (cardData.body.includes("textarea")) {
+          // Card body data was created with a textarea, switch to edit view
+          const textarea = document.createElement("textarea");
+          textarea.className = "card-body";
+          textarea.placeholder = "Enter description...";
+          textarea.value = cardData.body.match(/<textarea(.|\n)*<\/textarea>/g)[0];
+          card.replaceChild(textarea, cardBody);
+          cardBody.remove();
+          cardBody = textarea;
+
+          const viewAsHtmlIcon = card.querySelector(".view-as-html");
+          const editIcon = card.querySelector(".edit");
+          const lockIcon = card.querySelector(".lock");
+
+          viewAsHtmlIcon.style.display = "none";
+          editIcon.style.display = "inline";
+
+          lockIcon.addEventListener("click", () => {
+            if (cardBody.classList.contains("locked")) {
+              cardBody.classList.remove("locked");
+              lockIcon.classList.remove("fa-lock");
+              lockIcon.classList.add("fa-unlock");
+              card.classList.remove("disable-hover"); // Remove disable-hover class
+            } else {
+              cardBody.classList.add("locked");
+              lockIcon.classList.remove("fa-unlock");
+              lockIcon.classList.add("fa-lock");
+              card.classList.add("disable-hover"); // Add disable-hover class
+            }
+          });
+
+          editIcon.addEventListener("click", () => {
+            const newCardBody = document.createElement("div");
+            newCardBody.className = "card-body";
+            newCardBody.innerHTML = cardBody.value;
+
+            if (card.contains(cardBody)) {
+              card.replaceChild(newCardBody, cardBody);
+            } else {
+              card.appendChild(newCardBody);
+            }
+
+            cardBody = newCardBody;
+
+            viewAsHtmlIcon.style.display = "inline";
+            editIcon.style.display = "none";
+
+            // Remove event listener added to textarea when editing
+            cardBody.removeEventListener("input", saveToLocalStorage);
+          });
+
+        } else {
+          cardBody.innerHTML = cardData.body;
+        }
+
         container.appendChild(card);
         updateCardCount(bucket, 1);
       });
     });
   }
 }
+
 
 
 function resetLocalStorage() {
@@ -367,7 +424,7 @@ function createCard() {
   card.appendChild(cardBody);
 
   return card;
-  }
+}
 
 function updateCardCount(bucket, change) {
   const counter = bucket.querySelector(".counter");
