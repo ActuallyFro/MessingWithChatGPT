@@ -81,9 +81,8 @@ function loadFromLocalStorage() {
 
 
 function resetLocalStorage() {
-  // console.log("[DEBUG] LocalStorage() RESETTING!")
-
   localStorage.removeItem("kanbanBoard");
+  localStorage.removeItem("boardTitle");
   location.reload();
 }
 
@@ -97,7 +96,6 @@ function resizeWidthBuckets(){
   const bucketCount = document.querySelectorAll(".bucket").length;
 
   const bucketWidth = 100 / (bucketCount + 1);
-  console.log(`Bucket Width: ${bucketWidth}%`);
   document.querySelectorAll(".bucket").forEach(bucket => {
       bucket.style.width = `${bucketWidth}%`;
   });  
@@ -105,12 +103,10 @@ function resizeWidthBuckets(){
 
 function createBucket(bucketName="New Bucket") {
   const bucketCount = document.querySelectorAll(".bucket").length;
-  // console.log(`Bucket Count: ${bucketCount}`);
 
   const bucket = document.createElement('div');
   bucket.classList.add("bucket");
   bucket.setAttribute("id", `b${bucketCount + 1}`);
-  // bucket.setAttribute("id", `b${Date.now()}`); //NOT precise enough!
 
   const bucketTemplate = `
       <h2><span class="title" style="display: inline-block;">${bucketName}</span><span class="counter">0</span></h2>
@@ -131,11 +127,6 @@ function createBucket(bucketName="New Bucket") {
   bucket.addEventListener("drop", bucketDrop);
   bucket.addEventListener("dragenter", bucketDragEnter);
 
-
-  // const hrElement = document.querySelector("#Tool-Line");
-  // hrElement.insertAdjacentElement("beforebegin", bucket);
-
-  // Find "buckets" <div> and insert new bucket with in, at the end
   const bucketsElement = document.querySelector(".buckets");
   bucketsElement.insertAdjacentElement("beforeend", bucket);
 
@@ -251,6 +242,7 @@ function bucketDragEnter(e) {
 
 // --------------------
 // Cards
+
 function createCard() {
   const card = document.createElement("div");
   card.className = "card";
@@ -285,15 +277,33 @@ function createCard() {
   editIcon.style.marginLeft = "0.5rem";
   card.appendChild(editIcon);
 
-  let cardBody = document.createElement("div"); // Change this line
+  const lockIcon = document.createElement("i"); // Add lock icon
+  lockIcon.className = "fa fa-unlock lock";
+  lockIcon.style.marginLeft = "0.5rem";
+  card.appendChild(lockIcon);
+
+  let cardBody = document.createElement("div");
   cardBody.className = "card-body";
   cardBody.placeholder = "Enter description...";
   
-  // Update initial state of viewAsHtmlIcon and editIcon
+  // Update initial state of viewAsHtmlIcon, editIcon and lockIcon
   viewAsHtmlIcon.style.display = "inline";
   editIcon.style.display = "none";
+  lockIcon.style.display = "inline";
 
-  card.appendChild(cardBody);
+  lockIcon.addEventListener("click", () => {
+    if (cardBody.classList.contains("locked")) {
+        cardBody.classList.remove("locked");
+        lockIcon.classList.remove("fa-lock");
+        lockIcon.classList.add("fa-unlock");
+        card.classList.remove("disable-hover"); // Remove disable-hover class
+    } else {
+        cardBody.classList.add("locked");
+        lockIcon.classList.remove("fa-unlock");
+        lockIcon.classList.add("fa-lock");
+        card.classList.add("disable-hover"); // Add disable-hover class
+    }
+  });
 
   viewAsHtmlIcon.addEventListener("click", () => {
       if (cardBody.tagName === "TEXTAREA") {
@@ -317,37 +327,47 @@ function createCard() {
           viewAsHtmlIcon.style.display = "inline";
           editIcon.style.display = "none";
       }
-  });
-
-  editIcon.addEventListener("click", () => {
+    });
+    
+    editIcon.addEventListener("click", () => {
       if (cardBody.tagName === "DIV") {
           const textarea = document.createElement("textarea");
           textarea.className = "card-body";
           textarea.placeholder = "Enter description...";
-          textarea.value = cardBody.innerHTML; // Change this line
+          textarea.value = cardBody.innerHTML;
           card.replaceChild(textarea, cardBody);
           cardBody = textarea;
 
           viewAsHtmlIcon.style.display = "inline";
           editIcon.style.display = "none";
 
+          // Add event listener to save changes on input
+          cardBody.addEventListener("input", saveToLocalStorage);
       } else {
           const newCardBody = document.createElement("div");
           newCardBody.className = "card-body";
           newCardBody.innerHTML = cardBody.value;
+
           if (card.contains(cardBody)) {
               card.replaceChild(newCardBody, cardBody);
           } else {
               card.appendChild(newCardBody);
           }
+
           cardBody = newCardBody;
+
           viewAsHtmlIcon.style.display = "inline";
           editIcon.style.display = "none";
+
+          // Remove event listener added to textarea when editing
+          cardBody.removeEventListener("input", saveToLocalStorage);
       }
   });
-  
+
+  card.appendChild(cardBody);
+
   return card;
-}
+  }
 
 function updateCardCount(bucket, change) {
   const counter = bucket.querySelector(".counter");
@@ -484,13 +504,14 @@ function importMatrix(event) {
         
         try {
             const jsonData = JSON.parse(fileContent);
+
+            console.log("JSON Import size:: " + fileContent.length);
             
-            // Read and set the board title
-            const boardTitle = jsonData.boardTitle;
-            if (boardTitle) {
-                // Set the Board Title in your application
-                // Replace the following line with the relevant code to set the Board Title in your application
-                document.querySelector(".board-title").textContent = boardTitle;
+            const loadedBoardTitle = jsonData.boardTitle;
+            if (loadedBoardTitle) {
+              const titleElement = document.getElementById("boardTitle");
+              titleElement.textContent = loadedBoardTitle;
+              localStorage.setItem("boardTitle", loadedBoardTitle);
             }
 
             // Update the buckets data
