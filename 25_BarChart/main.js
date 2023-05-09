@@ -1,5 +1,5 @@
 (async function () {
-    const data = await d3.json("data.json");
+    let data = await d3.json("data.json");
     const margin = { top: 20, right: 20, bottom: 30, left: 40 },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
@@ -50,7 +50,7 @@
         .attr("class", "axis axis--y")
         .call(yAxis);
 
-const bar = svg.selectAll(".bar")
+let bar = svg.selectAll(".bar")
     .data(data)
     .enter().append("rect")
     .attr("class", "bar")
@@ -75,4 +75,41 @@ d3.select("#slider").on("input", function () {
     bar.attr("x", d => x(d.date));
     svg.selectAll(".axis--x").call(xAxis);
 });
+
+d3.select("#add-entry").on("submit", function (event) {
+    event.preventDefault();
+    const addDate = document.querySelector("#add-date").value;
+    const addPushups = Number(document.querySelector("#add-pushups").value);
+    data.push({ date: addDate, value: addPushups });
+    updateChart();
+});
+
+d3.select("#delete-entry").on("submit", function (event) {
+    event.preventDefault();
+    const deleteDate = document.querySelector("#delete-date").value;
+    data = data.filter(d => d.date !== deleteDate);
+    updateChart();
+});
+
+function updateChart() {
+    x.domain(data.map(function (d) { return d.date; }));
+    y.domain([0, d3.max(data, function (d) { return d.value; })]);
+
+    bar = svg.selectAll(".bar")
+        .data(data, d => d.date);
+
+    bar.exit().remove();
+
+    bar.enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function (d) { return x(d.date); })
+        .attr("y", function (d) { return y(d.value); })
+        .attr("width", x.bandwidth())
+        .attr("height", function (d) { return height - y(d.value); })
+        .merge(bar);
+
+    svg.selectAll(".axis--x").call(xAxis);
+    svg.selectAll(".axis--y").call(yAxis);
+    svg.selectAll(".grid").call(gridAxis);;
+}
 }());
