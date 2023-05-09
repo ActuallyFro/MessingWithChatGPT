@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+.axis text {
+    font-size: 10px;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.grid path,
+.grid line {
+    fill: none;
+    stroke: rgba(0, 0, 0, 0.15);
+    shape-rendering: crispEdges;
+}
+
+.zoom {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
