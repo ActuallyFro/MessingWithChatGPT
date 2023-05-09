@@ -1,5 +1,37 @@
 (async function () {
-    let data = await d3.json("data.json");
+    // let data = await d3.json("data.json");
+    let data = [
+        // You can add initial data points here, or leave it empty to start with no data.
+    ];
+
+    // Import data
+    document.getElementById("import").addEventListener("click", async () => {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "application/json";
+        fileInput.addEventListener("change", async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const fileText = await file.text();
+                data = JSON.parse(fileText);
+                updateChart();
+            }
+        });
+        fileInput.click();
+    });
+
+    // Export data
+    document.getElementById("export").addEventListener("click", () => {
+        const dataStr = JSON.stringify(data);
+        const dataBlob = new Blob([dataStr], { type: "application/json" });
+        const dataUrl = URL.createObjectURL(dataBlob);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = dataUrl;
+        downloadLink.download = "data.json";
+        downloadLink.click();
+        URL.revokeObjectURL(dataUrl);
+    });
+
     const margin = { top: 20, right: 20, bottom: 30, left: 40 },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
