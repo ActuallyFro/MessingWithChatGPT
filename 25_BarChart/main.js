@@ -68,48 +68,50 @@ function zoomed(event) {
     svg.selectAll(".axis--x").call(xAxis.scale(xt));
 }
 
-d3.select("#slider").on("input", function () {
-    const sliderPos = Number(this.value);
-    const newXDomain = data.slice(sliderPos, sliderPos + 20).map(d => d.date);
-    x.domain(newXDomain);
-    bar.attr("x", d => x(d.date));
-    svg.selectAll(".axis--x").call(xAxis);
-});
+    d3.select("#slider").on("input", function () {
+        const sliderPos = Number(this.value);
+        const newXDomain = data.slice(sliderPos, sliderPos + 20).map(d => d.date);
+        x.domain(newXDomain);
+        bar.attr("x", d => x(d.date));
+        svg.selectAll(".axis--x").call(xAxis);
+    });
 
-d3.select("#add-entry").on("submit", function (event) {
-    event.preventDefault();
-    const addDate = document.querySelector("#add-date").value;
-    const addPushups = Number(document.querySelector("#add-pushups").value);
-    data.push({ date: addDate, value: addPushups });
-    updateChart();
-});
+    // Add the new event listeners
+    d3.select("#add-entry").on("submit", function (event) {
+        event.preventDefault();
+        const addDate = document.querySelector("#add-date").value;
+        const addPushups = Number(document.querySelector("#add-pushups").value);
+        data.push({ date: addDate, value: addPushups });
+        data.sort((a, b) => new Date(a.date) - new Date(b.date));
+        updateChart();
+    });
 
-d3.select("#delete-entry").on("submit", function (event) {
-    event.preventDefault();
-    const deleteDate = document.querySelector("#delete-date").value;
-    data = data.filter(d => d.date !== deleteDate);
-    updateChart();
-});
+    d3.select("#delete-entry").on("submit", function (event) {
+        event.preventDefault();
+        const deleteDate = document.querySelector("#delete-date").value;
+        data = data.filter(d => d.date !== deleteDate);
+        updateChart();
+    });
 
-function updateChart() {
-    x.domain(data.map(function (d) { return d.date; }));
-    y.domain([0, d3.max(data, function (d) { return d.value; })]);
+    function updateChart() {
+        x.domain(data.map(function (d) { return d.date; }));
+        y.domain([0, d3.max(data, function (d) { return d.value; })]);
 
-    bar = svg.selectAll(".bar")
-        .data(data, d => d.date);
+        bar = svg.selectAll(".bar")
+            .data(data, d => d.date);
 
-    bar.exit().remove();
+        bar.exit().remove();
 
-    bar.enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function (d) { return x(d.date); })
-        .attr("y", function (d) { return y(d.value); })
-        .attr("width", x.bandwidth())
-        .attr("height", function (d) { return height - y(d.value); })
-        .merge(bar);
+        bar.enter().append("rect")
+            .attr("class", "bar")
+            .merge(bar)
+            .attr("x", function (d) { return x(d.date); })
+            .attr("y", function (d) { return y(d.value); })
+            .attr("width", x.bandwidth())
+            .attr("height", function (d) { return height - y(d.value); });
 
-    svg.selectAll(".axis--x").call(xAxis);
-    svg.selectAll(".axis--y").call(yAxis);
-    svg.selectAll(".grid").call(gridAxis);;
-}
+        svg.selectAll(".axis--x").call(xAxis);
+        svg.selectAll(".axis--y").call(yAxis);
+        svg.selectAll(".grid").call(gridAxis);
+    }
 }());
