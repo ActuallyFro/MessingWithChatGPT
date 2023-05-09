@@ -1,10 +1,10 @@
 (async function () {
     // let data = await d3.json("data.json");
-    let data = [
-        // You can add initial data points here, or leave it empty to start with no data.
-    ];
+    // let data = [
+    //     // You can add initial data points here, or leave it empty to start with no data.
+    // ];
+    let data = JSON.parse(localStorage.getItem("pushupData")) || [];
 
-    // Import data
     document.getElementById("import").addEventListener("click", async () => {
         const fileInput = document.createElement("input");
         fileInput.type = "file";
@@ -15,12 +15,12 @@
                 const fileText = await file.text();
                 data = JSON.parse(fileText);
                 updateChart();
+                localStorage.setItem("pushupData", JSON.stringify(data));
             }
         });
         fileInput.click();
     });
 
-    // Export data
     document.getElementById("export").addEventListener("click", () => {
         const dataStr = JSON.stringify(data);
         const dataBlob = new Blob([dataStr], { type: "application/json" });
@@ -31,6 +31,32 @@
         downloadLink.click();
         URL.revokeObjectURL(dataUrl);
     });
+
+    const dailyView = (data) => data;
+    const weeklyView = (data) => {
+        const weekData = {};
+        data.forEach(d => {
+            const week = new Date(d.date);
+            week.setDate(week.getDate() - week.getDay());
+            const weekStr = week.toISOString().slice(0, 10);
+            weekData[weekStr] = (weekData[weekStr] || 0) + d.value;
+        });
+        return Object.entries(weekData).map(([date, value]) => ({ date, value }));
+    };
+    const monthlyView = (data) => {
+        const monthData = {};
+        data.forEach(d => {
+            const monthStr = d.date.slice(0, 7) + "-01";
+            monthData[monthStr] = (monthData[monthStr] || 0) + d.value;
+        });
+        return Object.entries(monthData).map(([date, value]) => ({ date, value }));
+    };
+
+    let currentView = dailyView;
+    const updateView = (view) => {
+        currentView = view;
+        updateChart();
+    };
 
     const margin = { top: 20, right: 20, bottom: 30, left: 40 },
         width = 960 - margin.left - margin.right,
@@ -47,18 +73,12 @@
     const yAxis = d3.axisLeft(y).ticks(10);
     const gridAxis = d3.axisLeft(y).ticks(10).tickSize(-width).tickFormat("");
 
-    const zoom = d3.zoom()
-        .scaleExtent([1, 32])
-        .translateExtent([[0, 0], [width, height]])
-        .extent([[0, 0], [width, height]])
-        .on("zoom", zoomed);
-
     const svg = d3.select("#chart").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        .call(zoom);
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        // .call(zoom);
 
     svg.append("rect")
         .attr("width", width)
@@ -82,33 +102,15 @@
         .attr("class", "axis axis--y")
         .call(yAxis);
 
-let bar = svg.selectAll(".bar")
-    .data(data)
-    .enter().append("rect")
-    .attr("class", "bar")
-    .attr("x", function (d) { return x(d.date); })
-    .attr("y", function (d) { return y(d.value); })
-    .attr("width", x.bandwidth())
-    .attr("height", function (d) { return height - y(d.value); });
+    let bar = svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function (d) { return x(d.date); })
+        .attr("y", function (d) { return y(d.value); })
+        .attr("width", x.bandwidth())
+        .attr("height", function (d) { return height - y(d.value); });
 
-function zoomed(event) {
-    const t = event.transform;
-    const xt = t.rescaleX(x);
-    svg.selectAll(".bar")
-        .attr("x", function (d) { return xt(d.date); })
-        .attr("width", xt.bandwidth());
-    svg.selectAll(".axis--x").call(xAxis.scale(xt));
-}
-
-    d3.select("#slider").on("input", function () {
-        const sliderPos = Number(this.value);
-        const newXDomain = data.slice(sliderPos, sliderPos + 20).map(d => d.date);
-        x.domain(newXDomain);
-        bar.attr("x", d => x(d.date));
-        svg.selectAll(".axis--x").call(xAxis);
-    });
-
-    // Add the new event listeners
     d3.select("#add-entry").on("submit", function (event) {
         event.preventDefault();
         const addDate = document.querySelector("#add-date").value;
@@ -116,6 +118,7 @@ function zoomed(event) {
         data.push({ date: addDate, value: addPushups });
         data.sort((a, b) => new Date(a.date) - new Date(b.date));
         updateChart();
+        localStorage.setItem("pushupData", JSON.stringify(data));
     });
 
     d3.select("#delete-entry").on("submit", function (event) {
@@ -123,17 +126,20 @@ function zoomed(event) {
         const deleteDate = document.querySelector("#delete-date").value;
         data = data.filter(d => d.date !== deleteDate);
         updateChart();
+        localStorage.setItem("pushupData", JSON.stringify(data));
     });
 
     function updateChart() {
-        x.domain(data.map(function (d) { return d.date; }));
-        y.domain([0, d3.max(data, function (d) { return d.value; })]);
-
+        const viewData = currentView(data);
+    
+        x.domain(viewData.map(function (d) { return d.date; }));
+        y.domain([0, d3.max(viewData, function (d) { return d.value; })]);
+    
         bar = svg.selectAll(".bar")
-            .data(data, d => d.date);
-
+            .data(viewData, d => d.date);
+    
         bar.exit().remove();
-
+    
         bar.enter().append("rect")
             .attr("class", "bar")
             .merge(bar)
@@ -141,9 +147,22 @@ function zoomed(event) {
             .attr("y", function (d) { return y(d.value); })
             .attr("width", x.bandwidth())
             .attr("height", function (d) { return height - y(d.value); });
-
+    
         svg.selectAll(".axis--x").call(xAxis);
         svg.selectAll(".axis--y").call(yAxis);
         svg.selectAll(".grid").call(gridAxis);
-    }
+    }    
+
+    // Zoom buttons
+    const viewLevels = [dailyView, weeklyView, monthlyView];
+    let viewIndex = 0;
+    document.getElementById("zoom-out").addEventListener("click", () => {
+        viewIndex = Math.max(0, viewIndex - 1);
+        updateView(viewLevels[viewIndex]);
+    });
+    document.getElementById("zoom-in").addEventListener("click", () => {
+        viewIndex = Math.min(viewLevels.length - 1, viewIndex + 1);
+        updateView(viewLevels[viewIndex]);
+    });
+
 }());

@@ -37,9 +37,19 @@ h1 {
     stroke: rgba(0, 0, 0, 0.15);
     shape-rendering: crispEdges;
 }
-
+/* 
 .zoom {
     cursor: move;
     fill: none;
     pointer-events: all;
+} */
+
+#zoom-buttons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#chart {
+    position: relative;
 }
