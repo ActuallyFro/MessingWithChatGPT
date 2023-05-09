@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push-up Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Push-up Tracker</h1>
+        <div id="zoom-buttons">
+            Zoom:
+            <button id="zoom-out">-</button>
+            <button id="zoom-in">+</button>
+        </div>
+        <div id="chart"></div>        
+        <!-- <input type="range" min="0" max="100" value="0" id="slider"> -->
+        <hr>
+        <form id="add-entry">
+            <label for="add-date">Date:</label>
+            <input type="date" id="add-date">
+            <label for="add-pushups">Push-ups:</label>
+            <input type="number" id="add-pushups">
+            <button type="submit">Add Entry</button>
+        </form>
+        <form id="delete-entry">
+            <label for="delete-date">Date:</label>
+            <input type="date" id="delete-date">
+            <button type="submit">Delete Entry</button>
+        </form>
+        <hr>
+        <button id="import">Import</button>
+        <button id="export">Export</button>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
