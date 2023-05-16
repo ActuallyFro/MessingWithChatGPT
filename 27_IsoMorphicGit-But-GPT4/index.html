@@ -15,8 +15,9 @@
       font-family: monospace;
     }
   </style>
-  <script src="https://unpkg.com/isomorphic-git"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
   <script src="https://unpkg.com/browserfs"></script>
+  <script src="https://unpkg.com/isomorphic-git"></script>
 </head>
 <body>
   <div id="logArea"></div>
@@ -36,5 +37,11 @@
   <br>
   <button id="commitBtn">Commit</button>
   <script src="app.js"></script>
+
+  <hr>
+  <button id="exportRepoBtn">Export Repository</button>
+  <input type="file" id="importRepoBtn" style="display:none">
+  <label for="importRepoBtn">Import Repository</label>
+
 </body>
 </html>

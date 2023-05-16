@@ -1,3 +1,6 @@
+
+document.addEventListener('DOMContentLoaded', (event) => {
+
 // Configure BrowserFS and isomorphic-git
 BrowserFS.configure({ fs: 'InMemory' }, function (err) {
   if (err) return console.log(err);
@@ -150,5 +153,80 @@ BrowserFS.configure({ fs: 'InMemory' }, function (err) {
         }
       });
     });
-  })();
+
+
+  // Helper function to recursively read directory contents
+  async function readDirRecursive(fs, path, zip, basePath) {
+    const files = fs.readdirSync(path);
+    for (const file of files) {
+      const filePath = `${path}/${file}`;
+      const stats = fs.statSync(filePath);
+      if (stats.isFile()) {
+        const content = fs.readFileSync(filePath);
+        zip.file(`${basePath}/${file}`, content);
+      } else if (stats.isDirectory()) {
+        const subFolder = zip.folder(`${basePath}/${file}`);
+        await readDirRecursive(fs, filePath, subFolder, file);
+      }
+    }
+  }
+
+  // Export repository as zip
+  document.getElementById('exportRepoBtn').addEventListener('click', async function() {
+    const zip = new JSZip();
+
+    await readDirRecursive(fs, dir, zip, '');
+
+    zip.generateAsync({ type: 'blob' }).then(function(content) {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = 'repository.zip';
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  });
+
+  // Import repository from zip
+  document.getElementById('importRepoBtn').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const zip = new JSZip();
+      const content = await new Response(file).arrayBuffer();
+      const loadedZip = await zip.loadAsync(content);
+
+      BrowserFS.configure({ fs: 'InMemory' }, async function(err) {
+        if (err) return console.log(err);
+
+        await (async function() {
+          // Extract files from the zip
+          const extractFile = async function(zipObject, path) {
+            const data = await zipObject.async('arraybuffer');
+            fs.writeFileSync(path, new Buffer(data));
+          };
+
+          for (const relativePath in loadedZip.files) {
+            const zipObject = loadedZip.files[relativePath];
+            const fullPath = `${dir}/${relativePath}`;
+            if (!zipObject.dir) {
+              await extractFile(zipObject, fullPath);
+            } else {
+              fs.mkdirSync(fullPath);
+            }
+          }
+
+          // Update the file select
+          await updateFileSelect();
+        })();
+      });
+    }
+  });
+  
+  })(); //end async function
+});
+
+
+
+
 });
