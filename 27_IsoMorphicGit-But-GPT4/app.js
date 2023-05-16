@@ -23,7 +23,7 @@ BrowserFS.configure({ fs: 'InMemory' }, function (err) {
       message: 'Initial commit: Add hello.sh'
     });
 
-    // Add event listener to the button
+    // Add event listener to the gitLogBtn
     document.getElementById('gitLogBtn').addEventListener('click', async function() {
       // Get the commit history
       const commits = await git.log({ fs, dir, depth: 5, ref: 'master' });
@@ -40,6 +40,25 @@ BrowserFS.configure({ fs: 'InMemory' }, function (err) {
         logItem.textContent = `${commit.oid.substring(0, 7)} ${commit.commit.message}`;
         logArea.appendChild(logItem);
       }
+    });
+
+    // Add event listener to the gitStatusBtn
+    document.getElementById('gitStatusBtn').addEventListener('click', async function() {
+      // Get the status
+      const status = await git.statusMatrix({ fs, dir });
+      
+      // Get the status area
+      const statusArea = document.getElementById('statusArea');
+
+      // Clear the status area
+      statusArea.innerHTML = '';
+
+      // Print the status
+      status.forEach(([filepath, , worktreeStatus]) => {
+        const statusItem = document.createElement('p');
+        statusItem.textContent = worktreeStatus > 0 ? `${filepath}: Modified` : `${filepath}: Unmodified`;
+        statusArea.appendChild(statusItem);
+      });
     });
   })();
 });

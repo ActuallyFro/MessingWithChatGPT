@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Isomorphic-git SPA</title>
   <style>
-    #logArea {
+    #logArea, #statusArea, #diffArea {
       border: 2px solid #000;
       padding: 10px;
       margin: 10px 0;
@@ -17,6 +17,10 @@
 <body>
   <div id="logArea"></div>
   <button id="gitLogBtn">Git Log</button>
+  <div id="statusArea"></div>
+  <button id="gitStatusBtn">Git Status</button>
+  <div id="diffArea"></div>
+  <button id="gitDiffBtn">Git Diff</button>
   <script src="app.js"></script>
 </body>
 </html>
