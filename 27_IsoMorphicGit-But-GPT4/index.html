@@ -3,12 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Isomorphic-git SPA</title>
+  <style>
+    #logArea {
+      border: 2px solid #000;
+      padding: 10px;
+      margin: 10px 0;
+      min-height: 100px;
+    }
+  </style>
   <script src="https://unpkg.com/isomorphic-git"></script>
   <script src="https://unpkg.com/browserfs"></script>
 </head>
 <body>
-  <button id="gitLogBtn">Git Log</button>
   <div id="logArea"></div>
+  <button id="gitLogBtn">Git Log</button>
   <script src="app.js"></script>
 </body>
 </html>
