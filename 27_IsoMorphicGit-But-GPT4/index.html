@@ -4,11 +4,15 @@
   <meta charset="UTF-8">
   <title>Isomorphic-git SPA</title>
   <style>
-    #logArea, #statusArea, #diffArea {
+    #logArea, #statusArea, #diffArea, #editor {
       border: 2px solid #000;
       padding: 10px;
       margin: 10px 0;
       min-height: 100px;
+    }
+    #editor {
+      white-space: pre-wrap;
+      font-family: monospace;
     }
   </style>
   <script src="https://unpkg.com/isomorphic-git"></script>
@@ -21,6 +25,14 @@
   <button id="gitStatusBtn">Git Status</button>
   <div id="diffArea"></div>
   <button id="gitDiffBtn">Git Diff</button>
+  <br>
+  <select id="fileSelect"></select>
+  <br>
+  <div id="editor" contenteditable="true"></div>
+  <br>
+  <textarea id="commitComment" placeholder="Commit message"></textarea>
+  <br>
+  <button id="commitBtn">Commit</button>
   <script src="app.js"></script>
 </body>
 </html>

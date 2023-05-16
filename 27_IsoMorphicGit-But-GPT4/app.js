@@ -23,6 +23,65 @@ BrowserFS.configure({ fs: 'InMemory' }, function (err) {
       message: 'Initial commit: Add hello.sh'
     });
 
+    // Update file select options
+    async function updateFileSelect() {
+      const files = await git.listFiles({ fs, dir });
+      const fileSelect = document.getElementById('fileSelect');
+      fileSelect.innerHTML = '';
+      
+      // Add an empty option
+      const emptyOption = document.createElement('option');
+      emptyOption.value = '';
+      emptyOption.textContent = '';
+      fileSelect.appendChild(emptyOption);
+      
+      for (const file of files) {
+        const option = document.createElement('option');
+        option.value = file;
+        option.textContent = file;
+        fileSelect.appendChild(option);
+      }
+    }
+
+    await updateFileSelect();
+
+    // File select event listener
+    document.getElementById('fileSelect').addEventListener('change', async function(e) {
+      const selectedFile = e.target.value;
+      if (selectedFile) {
+        const content = fs.readFileSync(`${dir}/${selectedFile}`, 'utf8');
+        document.getElementById('editor').textContent = content;
+      } else {
+        document.getElementById('editor').textContent = '';
+      }
+    });
+
+
+    // Commit button event listener
+    document.getElementById('commitBtn').addEventListener('click', async function() {
+      const filepath = document.getElementById('fileSelect').value;
+      const content = document.getElementById('editor').textContent;
+      const message = document.getElementById('commitComment').value;
+
+      if (filepath && content && message) {
+        fs.writeFileSync(`${dir}/${filepath}`, content);
+        await git.add({ fs, dir, filepath });
+        // Commit the file
+        await git.commit({
+          fs,
+          dir,
+          author: { name: 'Your Name', email: 'you@example.com' },
+          message
+        });
+
+        // Clear the commit comment
+        document.getElementById('commitComment').value = '';
+
+        // Update the file select
+        await updateFileSelect();
+      }
+    });
+
     // Add event listener to the gitLogBtn
     document.getElementById('gitLogBtn').addEventListener('click', async function() {
       // Get the commit history
@@ -58,6 +117,27 @@ BrowserFS.configure({ fs: 'InMemory' }, function (err) {
         const statusItem = document.createElement('p');
         statusItem.textContent = worktreeStatus > 0 ? `${filepath}: Modified` : `${filepath}: Unmodified`;
         statusArea.appendChild(statusItem);
+      });
+    });
+
+    // Add event listener to the gitDiffBtn
+    document.getElementById('gitDiffBtn').addEventListener('click', async function() {
+      // Get the status
+      const status = await git.statusMatrix({ fs, dir });
+
+      // Get the diff area
+      const diffArea = document.getElementById('diffArea');
+
+      // Clear the diff area
+      diffArea.innerHTML = '';
+
+      // Print the diff
+      status.forEach(([filepath, headStatus, worktreeStatus]) => {
+        if (headStatus !== worktreeStatus) {
+          const diffItem = document.createElement('p');
+          diffItem.textContent = `${filepath}: Modified`;
+          diffArea.appendChild(diffItem);
+        }
       });
     });
   })();
