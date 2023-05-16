@@ -1,0 +1,13 @@
+== My Diagram
+[plantuml, my-diagram, png]
+....
+@startuml
+title "Messages - Sequence Diagram"
+
+Alice -> Bob: Ether / IP / UDP / DNS Qry "b'27.200.16.172.in-addr.arpa.local.'" 
+Alice -> Bob: Ether / IP / TCP 172.16.200.53:58236 > 140.82.114.25:https A
+Alice -> Bob: Ether / IP / TCP 140.82.114.25:https > 172.16.200.53:58236 A
+Alice -> Bob: Ether / IP / TCP 172.16.200.53:60131 > 162.254.199.181:https PA / Raw
+Alice -> Bob: Ether / IP / UDP / DNS Qry "b'ITC-4136b-IMC6000.local.'" 
+@enduml
+....
