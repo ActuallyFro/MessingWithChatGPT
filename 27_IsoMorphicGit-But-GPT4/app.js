@@ -28,13 +28,13 @@ BrowserFS.configure({ fs: 'InMemory' }, function (err) {
       const files = await git.listFiles({ fs, dir });
       const fileSelect = document.getElementById('fileSelect');
       fileSelect.innerHTML = '';
-      
+  
       // Add an empty option
       const emptyOption = document.createElement('option');
       emptyOption.value = '';
       emptyOption.textContent = '';
       fileSelect.appendChild(emptyOption);
-      
+  
       for (const file of files) {
         const option = document.createElement('option');
         option.value = file;
@@ -56,17 +56,26 @@ BrowserFS.configure({ fs: 'InMemory' }, function (err) {
       }
     });
 
-
     // Commit button event listener
     document.getElementById('commitBtn').addEventListener('click', async function() {
-      const filepath = document.getElementById('fileSelect').value;
+      const selectedFile = document.getElementById('fileSelect').value;
+      const newFileName = document.getElementById('fileName').value;
       const content = document.getElementById('editor').textContent;
       const message = document.getElementById('commitComment').value;
 
-      if (filepath && content && message) {
+      let filepath;
+      if (selectedFile) {
+        filepath = selectedFile;
+      } else if (newFileName) {
+        filepath = newFileName;
+      } else {
+        alert('Please select an existing file or enter a new file name.');
+        return;
+      }
+
+      if (content && message) {
         fs.writeFileSync(`${dir}/${filepath}`, content);
         await git.add({ fs, dir, filepath });
-        // Commit the file
         await git.commit({
           fs,
           dir,
@@ -74,13 +83,14 @@ BrowserFS.configure({ fs: 'InMemory' }, function (err) {
           message
         });
 
-        // Clear the commit comment
+        // Clear the commit comment and new file name input
         document.getElementById('commitComment').value = '';
+        document.getElementById('fileName').value = '';
 
         // Update the file select
         await updateFileSelect();
       }
-    });
+    });       
 
     // Add event listener to the gitLogBtn
     document.getElementById('gitLogBtn').addEventListener('click', async function() {
