@@ -1,57 +1,5 @@
-document.addEventListener('DOMContentLoaded', (event) => {
-    const toggleButton = document.getElementById('toggleDarkMode');
-
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
-
-    if (isDarkMode) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        toggleButton.innerText = "Toggle Light Mode";
-    } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        toggleButton.innerText = "Toggle Dark Mode";
-    }
-
-    console.log('current html attribute for data-theme: ' + document.documentElement.getAttribute('data-theme'));
-    console.log('current localstorage value for darkMode: ' + localStorage.getItem('darkMode'));
-
-    // Attach click event listener to the button
-    toggleButton.addEventListener('click', function () {
-        const isContentDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
-
-        if (isContentDarkMode) {
-            // document.body.classList.remove('dark-mode');
-            // navbar.classList.remove('SJSC-darkmode');
-            // container.classList.remove('SJSC-darkmode');
-            // card.classList.remove('SJSC-darkmode');
-            // modalContent.classList.remove('SJSC-darkmode');
-            // listItems.forEach(item => item.classList.remove('SJSC-darkmode'));
-            toggleButton.innerText = "Toggle Dark Mode";
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('darkMode', false);
-            console.log('light mode set');
-
-        } else {
-            // document.body.classList.add('dark-mode');
-            // navbar.classList.add('SJSC-darkmode');
-            // container.classList.add('SJSC-darkmode');
-            // card.classList.add('SJSC-darkmode');
-            // modalContent.classList.add('SJSC-darkmode');
-            // listItems.forEach(item => item.classList.add('SJSC-darkmode'));
-            toggleButton.innerText = "Toggle Light Mode";
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('darkMode', true);
-            console.log('dark mode set');
-        }
-
-        console.log('current html attribute for data-theme: ' + document.documentElement.getAttribute('data-theme'));
-        console.log('current localstorage value for darkMode: ' + localStorage.getItem('darkMode'));
-        //reload 
-    });
-});
-
-
 /*!
- * Color mode toggler for Bootstrap's docs (https://getbootstrap.com/)
+ * Dark mode toggler; extended from Bootstrap's docs (https://getbootstrap.com/)
  * Copyright 2011-2023 The Bootstrap Authors
  * Licensed under the Creative Commons Attribution 3.0 Unported License.
  */
@@ -59,85 +7,50 @@ document.addEventListener('DOMContentLoaded', (event) => {
 (() => {
     'use strict'
   
-    const storedTheme = localStorage.getItem('theme')
+    const storedDarkMode = localStorage.getItem('darkMode') === 'true'
+    const toggleButton = document.getElementById('toggleDarkMode');
   
-    const getPreferredTheme = () => {
-      if (storedTheme) {
-        return storedTheme
-      }
-  
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    }
-  
-    const setTheme = function (theme) {
-      if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.setAttribute('data-bs-theme', 'dark')
+    const setDarkMode = (isDarkMode) => {
+      if (isDarkMode) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+        toggleButton.innerText = "Light Mode";
       } else {
-        document.documentElement.setAttribute('data-bs-theme', theme)
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+        toggleButton.innerText = "Dark Mode";
       }
     }
   
-    setTheme(getPreferredTheme())
+    setDarkMode(storedDarkMode)
   
-    const showActiveTheme = (theme, focus = false) => {
-      const themeSwitcher = document.querySelector('#bd-theme')
-  
-      if (!themeSwitcher) {
-        return
-      }
-  
-      const themeSwitcherText = document.querySelector('#bd-theme-text')
-      const activeThemeIcon = document.querySelector('.theme-icon-active use')
-      const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
-      const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('href')
-  
-      document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
-        element.classList.remove('active')
-        element.setAttribute('aria-pressed', 'false')
-      })
-  
-      btnToActive.classList.add('active')
-      btnToActive.setAttribute('aria-pressed', 'true')
-      activeThemeIcon.setAttribute('href', svgOfActiveBtn)
-      const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
-      themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
-  
-      if (focus) {
-        themeSwitcher.focus()
-      }
+    const showActiveTheme = (isDarkMode) => {
+      const themeSwitcherText = isDarkMode ? "Dark Mode" : "Light Mode";
+      toggleButton.setAttribute('aria-label', themeSwitcherText);
     }
-  
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      if (storedTheme !== 'light' || storedTheme !== 'dark') {
-        setTheme(getPreferredTheme())
-      }
-    })
   
     window.addEventListener('DOMContentLoaded', () => {
-      showActiveTheme(getPreferredTheme())
+      showActiveTheme(storedDarkMode)
   
-      document.querySelectorAll('[data-bs-theme-value]')
-        .forEach(toggle => {
-          toggle.addEventListener('click', () => {
-            const theme = toggle.getAttribute('data-bs-theme-value')
-            localStorage.setItem('theme', theme)
-            setTheme(theme)
-            showActiveTheme(theme, true)
-          })
-        })
+      toggleButton.addEventListener('click', function () {
+        const isContentDarkMode = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+  
+        setDarkMode(!isContentDarkMode);
+        localStorage.setItem('darkMode', !isContentDarkMode);
+        showActiveTheme(!isContentDarkMode);
+      });
     })
   })()
+  
 
 /////////////////////////
-// Get the button
-let mybutton = document.getElementById("scrollButtonToTop");
+// Scroll to Top button
+let currentToTopButton = document.getElementById("scrollButtonToTop");
 window.onscroll = function() {scrollFunction()};
 
 function scrollFunction() {
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        mybutton.style.display = "block";
+        currentToTopButton.style.display = "block";
     } else {
-        mybutton.style.display = "none";
+        currentToTopButton.style.display = "none";
     }
 }
 
