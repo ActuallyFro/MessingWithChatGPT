@@ -1,9 +1,3 @@
-/*!
- * Dark mode toggler; extended from Bootstrap's docs (https://getbootstrap.com/)
- * Copyright 2011-2023 The Bootstrap Authors
- * Licensed under the Creative Commons Attribution 3.0 Unported License.
- */
-
 (() => {
     'use strict'
   
@@ -13,10 +7,10 @@
     const setDarkMode = (isDarkMode) => {
       if (isDarkMode) {
         document.documentElement.setAttribute('data-bs-theme', 'dark');
-        toggleButton.innerText = "Light Mode";
+        toggleButton.checked = true;
       } else {
         document.documentElement.setAttribute('data-bs-theme', 'light');
-        toggleButton.innerText = "Dark Mode";
+        toggleButton.checked = false;
       }
     }
   
@@ -30,7 +24,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       showActiveTheme(storedDarkMode)
   
-      toggleButton.addEventListener('click', function () {
+      toggleButton.addEventListener('change', function () {
         const isContentDarkMode = document.documentElement.getAttribute('data-bs-theme') === 'dark';
   
         setDarkMode(!isContentDarkMode);
@@ -39,7 +33,6 @@
       });
     })
   })()
-  
 
 /////////////////////////
 // Scroll to Top button
